@@ -549,7 +549,7 @@ export default function Dashboard({ formData }) {
                     </div>
 
                     <div className="prose prose-indigo max-w-none text-slate-600 bg-slate-50/50 p-6 rounded-2xl border border-slate-100">
-                        <AIAnalysisResult formData={formData} />
+                        <AIAnalysisDisplay analysis={aiAnalysis} loading={aiLoading} error={aiError} />
                     </div>
                 </div>
 
