@@ -14,48 +14,55 @@ export const calculateMaturityScore = (formData) => {
         structure: 0
     };
 
-    // --- ACQUISITION (Max 30) ---
+    // --- ACQUISITION (Max 30) --- More punitive thresholds
     const qualRate = parseFloat(formData.qualified_rate) || 0;
-    if (qualRate >= 50) pillars.acquisition += 15;
-    else if (qualRate >= 30) pillars.acquisition += 10;
-    else pillars.acquisition += 5;
+    if (qualRate >= 70) pillars.acquisition += 15;      // Raised from 50
+    else if (qualRate >= 50) pillars.acquisition += 8;  // Reduced from 10
+    else if (qualRate >= 30) pillars.acquisition += 3;  // New tier
+    else pillars.acquisition += 0;                       // Reduced from 5
 
     if (formData.leads_volume > 50) pillars.acquisition += 5;
-    else if (formData.leads_volume > 20) pillars.acquisition += 3;
+    else if (formData.leads_volume > 30) pillars.acquisition += 3;  // Raised from 20
+    else if (formData.leads_volume > 10) pillars.acquisition += 1;  // New tier
 
     if (formData.cac) pillars.acquisition += 5;
     if (formData.outbound_volume && formData.outbound_volume > 0) pillars.acquisition += 5;
 
-    // --- PROSPECTION (Max 30) ---
+    // --- PROSPECTION (Max 30) --- More punitive
     const outboundVol = parseFloat(formData.outbound_volume) || 0;
     if (outboundVol > 100) pillars.prospection += 10;
-    else if (outboundVol > 30) pillars.prospection += 5;
+    else if (outboundVol > 50) pillars.prospection += 5;   // Raised from 30
+    else if (outboundVol > 20) pillars.prospection += 2;   // New tier
 
     const respRate = parseFloat(formData.response_rate) || 0;
-    if (respRate >= 10) pillars.prospection += 10;
-    else if (respRate >= 5) pillars.prospection += 5;
+    if (respRate >= 20) pillars.prospection += 10;         // Raised from 10
+    else if (respRate >= 10) pillars.prospection += 5;     // Reduced points
+    else if (respRate >= 5) pillars.prospection += 2;      // Reduced from 5
 
     if (formData.follow_up_system === true) pillars.prospection += 10;
 
-    // --- CONVERSION (Max 40) ---
+    // --- CONVERSION (Max 40) --- More punitive
     const closingRate = parseFloat(formData.closing_rate) || 0;
-    if (closingRate >= 30) pillars.conversion += 15;
-    else if (closingRate >= 20) pillars.conversion += 10;
-    else if (closingRate >= 10) pillars.conversion += 5;
+    if (closingRate >= 40) pillars.conversion += 15;       // Raised from 30
+    else if (closingRate >= 30) pillars.conversion += 10;  // Same threshold
+    else if (closingRate >= 20) pillars.conversion += 5;   // Reduced from 10
+    else if (closingRate >= 10) pillars.conversion += 2;   // Reduced from 5
 
     const showUp = parseFloat(formData.show_up_rate) || 0;
-    if (showUp >= 80) pillars.conversion += 15;
-    else if (showUp >= 70) pillars.conversion += 10;
-    else if (showUp >= 60) pillars.conversion += 6;
+    if (showUp >= 85) pillars.conversion += 15;            // Raised from 80
+    else if (showUp >= 75) pillars.conversion += 10;       // Raised from 70
+    else if (showUp >= 65) pillars.conversion += 5;        // Raised from 60, reduced points
+    else if (showUp >= 50) pillars.conversion += 2;        // New tier
 
     if (formData.sales_reps >= 3) pillars.conversion += 5;
     else if (formData.sales_reps >= 2) pillars.conversion += 3;
 
     if (formData.average_deal > 5000) pillars.conversion += 5;
 
-    // --- STRUCTURE (Max 30) ---
+    // --- STRUCTURE (Max 30) --- More punitive
     if (formData.crm_usage === 'systematic') pillars.structure += 10;
-    else if (formData.crm_usage === 'sometimes') pillars.structure += 5;
+    else if (formData.crm_usage === 'sometimes') pillars.structure += 3;  // Reduced from 5
+    // No points for rarely/no CRM
 
     if (formData.playbook === true) pillars.structure += 10;
     if (formData.dashboards === true) pillars.structure += 10;
