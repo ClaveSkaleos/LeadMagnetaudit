@@ -31,15 +31,17 @@ export default async function handler(req, res) {
         }
 
         const genAI = new GoogleGenerativeAI(API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        // Use gemini-1.5-flash for better logical reasoning and speed
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
 Rôle :
 Agis comme un VP Sales senior spécialisé en structuration de systèmes commerciaux B2B.
-Tu es direct, factuel et orienté résultat. Pas de blabla, pas de motivation.
+Ton ton est clinique, direct, factuel. Pas de motivation, pas d’emojis.
 
 Mission :
-Analyse les données commerciales fournies. Identifie le goulot d’étranglement principal qui limite la performance globale.
+Analyse les données commerciales fournies et identifie le point de fuite principal.
+Base ton analyse uniquement sur les chiffres donnés.
 
 DONNÉES DU PROSPECT :
 - Volume de Leads : ${formData.leads_volume}/mois (Inbound)
@@ -51,45 +53,62 @@ DONNÉES DU PROSPECT :
 - Taux de Closing : ${formData.closing_rate}%
 - Panier moyen : ${formData.average_deal}€
 - Coût Acquisition Client (CAC) : ${formData.cac || 'Non renseigné'}€
-- Ratio Deal/CAC (Rentabilité) : ${formData.cac ? (formData.average_deal / formData.cac).toFixed(2) : 'N/A'} (Cible > 3.0)
+- Ratio CAC/Panier : ${formData.cac ? Math.round((formData.cac / formData.average_deal) * 100) : 'N/A'}% (Cible < 25%)
 - Nombre de commerciaux : ${formData.sales_reps}
 - Utilisation CRM : ${formData.crm_usage}
 - Playbook de vente : ${formData.playbook ? 'Oui' : 'Non'}
 - Pilotage (Dashboards) : ${formData.dashboards ? 'Oui' : 'Non'}
 
+RÈGLES D’ÉVALUATION OBLIGATOIRES :
 
-Contraintes :
-• Base-toi uniquement sur les chiffres donnés.
-• Priorise l’impact financier, pas le confort organisationnel.
-• Si une donnée est absente, ignore-la sans spéculer.
-• Pas de phrases vagues (“améliorer”, “travailler”, “optimiser”).
-• Pas d'emojis. Pas de phrases inspirantes.
+1. Qualification des prospects (qualified_rate)
+• ≥ 70% → Bon
+• 50–69% → Moyen, optimisation nécessaire
+• < 50% → Critique (mauvais ciblage ou mauvais message)
 
-RÈGLES DE PRIORISATION (IMPORTANT) :
-1. Si le Ratio Deal/CAC (Panier moyen / Coût acquisition) est inférieur à 3, c'est une ALERTE ROUGE. Si inférieur à 2, c'est CRITIQUE (perte d'argent probable).
-2. Si "Système de suivi Outbound" est "Non", c'est souvent la PRIO #1 (pilotage à l'aveugle).
-3. Tu dois TOUJOURS donner une action, même si les chiffres semblent bons.
+2. Coût d’acquisition (CAC) vs Panier moyen (average_deal)
+• CAC ≤ 20–25% du panier → Bon
+• CAC ≈ 30–40% → À surveiller
+• CAC ≥ 50% → Critique
+• Si CAC proche du panier → Non viable
+
+3. Système de suivi des accroches (follow_up_system)
+• Si “Non” → Recommander obligatoirement la mise en place d’un tracking
+
+4. Taux de présence aux RDV (show_up_rate)
+• ≥ 75% → Bon
+• 60–74% → Moyen
+• < 60% → Critique (rappels / qualification insuffisante)
+
+5. Taux de closing (closing_rate)
+• ≥ 50% → Excellent
+• 40–49% → Bon
+• 30–39% → Moyen (souvent lié au prix ou au discours)
+• < 30% → Critique
+• Toujours corréler avec le panier moyen : Si panier élevé + closing faible → prix / valeur mal alignés
 
 Format de réponse OBLIGATOIRE :
 
 1. Diagnostic (3–4 lignes max)
-• Où se situe la fuite principale (lead, qualification, show-up, closing, panier, process).
-• Impact estimé sur le chiffre d’affaires ou le volume.
+Où se situe la fuite principale et son impact estimé.
 
-2. Goulot d’étranglement prioritaire
-• Nom précis de l’indicateur.
-• Pourquoi c’est lui et pas un autre.
+2. Indicateur critique prioritaire
+Nom précis + raison.
 
-3. Action exécutable demain matin (1 seule)
-• Étape par étape.
-• Temps estimé.
-• Qui doit le faire.
-• Outil ou méthode concrète.
+3. Action exécutable demain matin (UNE seule)
+Étapes concrètes, outil ou méthode, temps estimé.
 
 4. Gain potentiel estimé
-• Exemple : “+X RDV / mois” ou “+Y% closing” ou “+Z€ mensuel estimé”.
+Exemple : “+X RDV / mois” ou “+Y% closing”.
 
-Ton attendu : clinique, autoritaire, orienté système.
+Contraintes :
+• Pas de généralités (“optimiser”, “améliorer”).
+• Une seule priorité.
+• Ne jamais spéculer sur des données absentes.
+• Toujours corréler qualification, CAC, closing et panier.
+
+Objectif final :
+Donner une action à effet levier immédiat, exécutable en < 24h.
 `;
 
         const result = await model.generateContent(prompt);
