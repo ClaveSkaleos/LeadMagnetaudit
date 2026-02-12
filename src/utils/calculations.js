@@ -74,53 +74,72 @@ export const calculateMaturityScore = (formData) => {
  */
 export const calculateOptimizedRevenue = (formData) => {
     const leadVolume = parseFloat(formData.leads_volume) || 0;
+    const showUpRate = parseFloat(formData.show_up_rate) || 75;
     const closingRate = parseFloat(formData.closing_rate) || 0;
     const avgDeal = parseFloat(formData.average_deal) || 0;
 
-    const annualRevenue = leadVolume * (closingRate / 100) * avgDeal * 12;
-    const currentMonthly = annualRevenue / 12;
+    // Current monthly revenue calculation
+    // Leads → Show up at RDV → Close → Revenue
+    const currentRDVs = leadVolume * (showUpRate / 100);
+    const currentDeals = currentRDVs * (closingRate / 100);
+    const currentMonthly = currentDeals * avgDeal;
 
     // Calculate the maturity score to determine potential
     const maturity = calculateMaturityScore(formData);
     const maturityScore = maturity.total;
 
-    // INVERSE CORRELATION: High maturity = Low multiplier (very conservative)
-    // Score 90-100 = 1.02-1.05x (marginal gain)
-    // Score 80-90 = 1.05-1.12x (minor optimization)
-    // Score 60-80 = 1.12-1.25x (solid improvement)
-    // Score 40-60 = 1.25-1.35x (significant improvement)
-    // Score 0-40 = 1.35-1.50x (transformational but realistic)
+    // Optimized scenario: identify improvement levers
+    let optimizedShowUpRate = showUpRate;
+    let optimizedClosingRate = closingRate;
+    let optimizedLeadVolume = leadVolume;
 
-    let multiplier = 1.0;
-
-    if (maturityScore >= 90) {
-        // Top tier: 2-5% potential only
-        multiplier = 1.02 + ((100 - maturityScore) / 100) * 0.03;
-    } else if (maturityScore >= 80) {
-        // Very Strong: 5-12% boost potential
-        multiplier = 1.05 + ((90 - maturityScore) / 10) * 0.07;
-    } else if (maturityScore >= 60) {
-        // Strong but gaps: 12-25% revenue potential
-        multiplier = 1.12 + ((80 - maturityScore) / 20) * 0.13;
-    } else if (maturityScore >= 40) {
-        // Average: 25-35% potential
-        multiplier = 1.25 + ((60 - maturityScore) / 20) * 0.10;
-    } else {
-        // Low maturity: 35-50% potential (capped at 1.5x)
-        multiplier = 1.35 + ((40 - maturityScore) / 40) * 0.15;
+    // Show-up rate optimization (realistic targets)
+    if (showUpRate < 75) {
+        optimizedShowUpRate = Math.min(75, showUpRate + 15); // Cap at 75%, max +15 pts
+    } else if (showUpRate < 85) {
+        optimizedShowUpRate = Math.min(85, showUpRate + 5); // Cap at 85%, max +5 pts
     }
 
-    // Cap at realistic maximum
-    multiplier = Math.min(multiplier, 1.50);
-    multiplier = Math.max(multiplier, 1.02); // Minimum 2% improvement ALWAYS
+    // Closing rate optimization (realistic targets based on maturity)
+    if (closingRate < 30) {
+        optimizedClosingRate = Math.min(35, closingRate + 10); // Cap at 35%, max +10 pts
+    } else if (closingRate < 40) {
+        optimizedClosingRate = Math.min(45, closingRate + 5); // Cap at 45%, max +5 pts
+    } else if (closingRate < 50) {
+        optimizedClosingRate = Math.min(55, closingRate + 3); // Cap at 55%, max +3 pts
+    }
 
-    const optimizedMonthly = currentMonthly * multiplier;
+    // Lead volume optimization (via prospection improvements)
+    const outboundVol = parseFloat(formData.outbound_volume) || 0;
+    const responseRate = parseFloat(formData.response_rate) || 0;
+    if (outboundVol < 50 || responseRate < 20) {
+        // If weak prospection, potential to add 20-30% more leads
+        optimizedLeadVolume = leadVolume * 1.25;
+    } else if (outboundVol < 100 || responseRate < 30) {
+        // Moderate prospection, 10-15% more leads possible
+        optimizedLeadVolume = leadVolume * 1.15;
+    } else {
+        // Strong prospection, 5-10% incremental improvement
+        optimizedLeadVolume = leadVolume * 1.05;
+    }
+
+    // Optimized monthly revenue calculation
+    const optimizedRDVs = optimizedLeadVolume * (optimizedShowUpRate / 100);
+    const optimizedDeals = optimizedRDVs * (optimizedClosingRate / 100);
+    const optimizedMonthly = optimizedDeals * avgDeal;
+
+    // Ensure optimized is ALWAYS higher than current (minimum +5%)
+    const finalOptimized = Math.max(optimizedMonthly, currentMonthly * 1.05);
+
+    const percentageGain = currentMonthly > 0
+        ? Math.round(((finalOptimized - currentMonthly) / currentMonthly) * 100)
+        : 0;
 
     return {
         current: Math.round(currentMonthly),
-        optimized: Math.round(optimizedMonthly),
-        percentageGain: Math.round((multiplier - 1) * 100),
-        annualGain: Math.round((optimizedMonthly - currentMonthly) * 12)
+        optimized: Math.round(finalOptimized),
+        percentageGain: percentageGain,
+        annualGain: Math.round((finalOptimized - currentMonthly) * 12)
     };
 };
 

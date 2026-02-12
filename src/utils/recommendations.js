@@ -2,24 +2,53 @@
 import { calculateMaturityScore, calculateOptimizedRevenue, identifyWeaknesses } from './calculations';
 
 /**
+ * Calculate realistic financial gains based on actual metrics
+ */
+const calculateRealGains = (data) => {
+    const leadVolume = parseFloat(data.leads_volume) || 0;
+    const showUpRate = parseFloat(data.show_up_rate) || 75;
+    const closingRate = parseFloat(data.closing_rate) || 0;
+    const avgDeal = parseFloat(data.average_deal) || 0;
+
+    // Current state
+    const currentRDVs = leadVolume * (showUpRate / 100);
+    const currentDeals = currentRDVs * (closingRate / 100);
+    const currentMonthlyRevenue = currentDeals * avgDeal;
+
+    return {
+        leadVolume,
+        showUpRate,
+        closingRate,
+        avgDeal,
+        currentRDVs,
+        currentDeals,
+        currentMonthlyRevenue
+    };
+};
+
+/**
  * Generate prioritized recommendations
  */
 export const generateRecommendations = (data) => {
     const recommendations = [];
-    const revenue = calculateOptimizedRevenue(data);
-
-    // FIXED: Calculate gain base correctly
-    const annualGain = revenue.annualGain || ((revenue.optimized - revenue.current) * 12);
+    const metrics = calculateRealGains(data);
+    const { leadVolume, showUpRate, closingRate, avgDeal, currentRDVs, currentDeals, currentMonthlyRevenue } = metrics;
 
     // Priority 1: Critical CRM usage
     if (data.crm_usage !== 'systematic') {
+        // CRM impact: better tracking = +10% closing rate improvement
+        const improvedClosing = closingRate * 1.10;
+        const additionalDeals = (currentRDVs * (improvedClosing / 100)) - currentDeals;
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
         recommendations.push({
             priority: 1,
             category: 'structure',
             title: 'Imposez l\'utilisation rigoureuse du CRM',
             description: 'Sans CRM, impossible d\'avoir de la visibilité et d\'optimiser vos process',
             impact: 'critical',
-            estimatedGain: Math.round(annualGain * 0.30), // Increased from 0.12
+            estimatedGain: Math.round(annualGain),
             timeframe: '1-2 semaines',
             difficulty: 'low',
             quickWin: true,
@@ -33,15 +62,22 @@ export const generateRecommendations = (data) => {
     }
 
     // Priority 2: Show-up rate
-    const showUpRate = parseFloat(data.show_up_rate) || 0;
-    if (showUpRate < 70) {
+    if (showUpRate < 75) {
+        // Show-up improvement: from current to 75%
+        const targetShowUp = 75;
+        const improvedRDVs = leadVolume * (targetShowUp / 100);
+        const additionalRDVs = improvedRDVs - currentRDVs;
+        const additionalDeals = additionalRDVs * (closingRate / 100);
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
         recommendations.push({
             priority: 1,
             category: 'conversion',
-            title: `Améliorez votre taux de présence (${showUpRate}% → 75%)`,
-            description: 'Chaque RDV fantôme = temps commercial perdu',
+            title: `Améliorez votre taux de présence (${Math.round(showUpRate)}% → 75%)`,
+            description: 'Chaque RDV fantôme = temps commercial perdu + opportunité manquée',
             impact: 'high',
-            estimatedGain: Math.round(annualGain * 0.25), // Increased from 0.15
+            estimatedGain: Math.round(annualGain),
             timeframe: '1-2 semaines',
             difficulty: 'low',
             quickWin: true,
@@ -55,15 +91,21 @@ export const generateRecommendations = (data) => {
     }
 
     // Priority 3: Closing rate
-    const closingRate = parseFloat(data.closing_rate) || 0;
-    if (closingRate < 25) {
+    if (closingRate < 30) {
+        // Closing improvement: +5-10 points realistic gain
+        const targetClosing = Math.min(closingRate + 10, 35);
+        const improvedDeals = currentRDVs * (targetClosing / 100);
+        const additionalDeals = improvedDeals - currentDeals;
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
         recommendations.push({
             priority: 2,
             category: 'conversion',
-            title: `Optimisez votre closing (${closingRate}% → 30%)`,
+            title: `Optimisez votre closing (${Math.round(closingRate)}% → ${Math.round(targetClosing)}%)`,
             description: 'Un closing faible révèle un problème de qualification ou de pitch',
             impact: 'high',
-            estimatedGain: Math.round(annualGain * 0.40), // Increased from 0.20
+            estimatedGain: Math.round(annualGain),
             timeframe: '4-8 semaines',
             difficulty: 'high',
             quickWin: false,
@@ -78,14 +120,21 @@ export const generateRecommendations = (data) => {
 
     // Priority 4: Qualification
     const qualifiedRate = parseFloat(data.qualified_rate) || 0;
-    if (qualifiedRate < 40) {
+    if (qualifiedRate < 50) {
+        // Better qualification = +15% closing rate (less time wasted on bad fits)
+        const improvedClosing = closingRate * 1.15;
+        const improvedDeals = currentRDVs * (improvedClosing / 100);
+        const additionalDeals = improvedDeals - currentDeals;
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
         recommendations.push({
             priority: 2,
             category: 'acquisition',
-            title: `Améliorez la qualification (${qualifiedRate}% → 50%)`,
-            description: 'Trop de leads non qualifiés saturent votre équipe',
+            title: `Améliorez la qualification (${Math.round(qualifiedRate)}% → 60%)`,
+            description: 'Trop de leads non qualifiés saturent votre équipe et baissent le closing',
             impact: 'medium',
-            estimatedGain: Math.round(annualGain * 0.25), // Increased from 0.10
+            estimatedGain: Math.round(annualGain),
             timeframe: '2-4 semaines',
             difficulty: 'medium',
             quickWin: false,
@@ -100,13 +149,20 @@ export const generateRecommendations = (data) => {
 
     // Priority 5: Book de Vente (ex-Playbook)
     if (!data.playbook) {
+        // Playbook impact: +8% closing improvement from standardization
+        const improvedClosing = closingRate * 1.08;
+        const improvedDeals = currentRDVs * (improvedClosing / 100);
+        const additionalDeals = improvedDeals - currentDeals;
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
         recommendations.push({
             priority: 3,
             category: 'structure',
             title: 'Créez un Book de Vente documenté',
             description: 'Standardisez vos approches gagnantes pour ne plus dépendre du talent individuel',
             impact: 'medium',
-            estimatedGain: Math.round(annualGain * 0.18), // Increased from 0.08
+            estimatedGain: Math.round(annualGain),
             timeframe: '3-4 semaines',
             difficulty: 'medium',
             quickWin: false,
@@ -121,13 +177,20 @@ export const generateRecommendations = (data) => {
 
     // Priority 6: Dashboards
     if (!data.dashboards) {
+        // Dashboards impact: +5% performance from visibility
+        const improvedClosing = closingRate * 1.05;
+        const improvedDeals = currentRDVs * (improvedClosing / 100);
+        const additionalDeals = improvedDeals - currentDeals;
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
         recommendations.push({
             priority: 3,
             category: 'structure',
             title: 'Implémentez des dashboards en temps réel',
             description: 'Donnez de la visibilité à votre équipe sur le pipeline',
             impact: 'medium',
-            estimatedGain: Math.round(annualGain * 0.12), // Increased from 0.05
+            estimatedGain: Math.round(annualGain),
             timeframe: '1-2 semaines',
             difficulty: 'low',
             quickWin: true,
@@ -142,14 +205,22 @@ export const generateRecommendations = (data) => {
 
     // Priority 7: Outbound Volume
     const outboundVol = parseFloat(data.outbound_volume) || 0;
-    if (outboundVol < 30) {
+    const responseRate = parseFloat(data.response_rate) || 0;
+    if (outboundVol < 50 || responseRate < 20) {
+        // Prospection outbound: add 25% more qualified leads
+        const additionalLeads = leadVolume * 0.25;
+        const additionalRDVs = additionalLeads * (showUpRate / 100);
+        const additionalDeals = additionalRDVs * (closingRate / 100);
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
         recommendations.push({
             priority: 2,
             category: 'prospection',
-            title: `Intensifiez la prospection outbound (${outboundVol} → 50+/mois)`,
+            title: `Intensifiez la prospection outbound (${outboundVol} → 50+/semaine)`,
             description: 'Ne dépendez pas que de l\'inbound, prenez les devants',
             impact: 'high',
-            estimatedGain: Math.round(annualGain * 0.35), // Increased from 0.15
+            estimatedGain: Math.round(annualGain),
             timeframe: '2-4 semaines',
             difficulty: 'medium',
             quickWin: false,
