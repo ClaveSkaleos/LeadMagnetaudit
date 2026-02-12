@@ -37,14 +37,14 @@ export const generateSalesAnalysis = async (formData, auditAnswers) => {
             const prompt = `
 Rôle :
 Agis comme un VP Sales senior spécialisé en structuration de systèmes commerciaux B2B.
-Ton ton est clinique, direct, factuel. Pas de motivation, pas d’emojis.
+Ton ton est clinique, direct, factuel. Pas de motivation, pas d'emojis.
 
 Mission :
-Analyse les données commerciales fournies et identifie le point de fuite principal.
+Analyse les données commerciales fournies selon des seuils d'évaluation précis.
 Base ton analyse uniquement sur les chiffres donnés.
 
 DONNÉES DU PROSPECT :
-- Volume de Leads : ${formData.leads_volume}/mois (Inbound)
+- Volume de Leads en appel : ${formData.leads_volume}/mois (Inbound)
 - Taux de qualification : ${formData.qualified_rate}%
 - Volume Outbound : ${formData.outbound_volume || 0} contacts/semaine
 - Taux de réponse Outbound : ${formData.response_rate || 0}%
@@ -59,56 +59,78 @@ DONNÉES DU PROSPECT :
 - Playbook de vente : ${formData.playbook ? 'Oui' : 'Non'}
 - Pilotage (Dashboards) : ${formData.dashboards ? 'Oui' : 'Non'}
 
-RÈGLES D’ÉVALUATION OBLIGATOIRES :
+RÈGLES DE SCORING :
+• Score global sur 100
+• Le score 100/100 est INTERDIT sauf si tous les indicateurs sont au niveau "Excellent"
+• Même avec un score élevé (80–90), un Top 3 d'optimisations est OBLIGATOIRE
+• Le score doit refléter la performance globale, pas un seul KPI
 
-1. Qualification des prospects (qualified_rate)
+SEUILS D'ÉVALUATION :
+
+Volume de leads en appel (leads_volume)
+• 1–2 / mois → Critique
+• 3–8 → Faible
+• 9–20 → Correct
+• 20+ → Bon
+
+Qualification des prospects (qualified_rate)
 • ≥ 70% → Bon
-• 50–69% → Moyen, optimisation nécessaire
-• < 50% → Critique (mauvais ciblage ou mauvais message)
+• 50–69% → Moyen
+• < 50% → Critique
 
-2. Coût d’acquisition (CAC) vs Panier moyen (average_deal)
-• CAC ≤ 20–25% du panier → Bon
-• CAC ≈ 30–40% → À surveiller
-• CAC ≥ 50% → Critique
-• Si CAC proche du panier → Non viable
+CAC vs Panier moyen (cac / average_deal)
+• CAC ≤ 25% du panier → Bon
+• 25–40% → À surveiller
+• ≥ 40% → Mauvais
+• ≥ 50% → Critique
+• Règle : un client doit idéalement rapporter ≥ 3× son coût d'acquisition
 
-3. Système de suivi des accroches (follow_up_system)
-• Si “Non” → Recommander obligatoirement la mise en place d’un tracking
+Nouveaux contacts & Taux de réponse (response_rate)
+• ≥ 50% → Excellent
+• 20–49% → Correct
+• < 20% → Critique
 
-4. Taux de présence aux RDV (show_up_rate)
+Système de suivi des accroches (follow_up_system)
+• Non → Ajout automatique dans le Top 3
+
+Taux de présence RDV (show_up_rate)
 • ≥ 75% → Bon
 • 60–74% → Moyen
-• < 60% → Critique (rappels / qualification insuffisante)
+• < 60% → Critique
 
-5. Taux de closing (closing_rate)
+Taux de closing (closing_rate)
 • ≥ 50% → Excellent
 • 40–49% → Bon
-• 30–39% → Moyen (souvent lié au prix ou au discours)
+• 30–39% → Correct
 • < 30% → Critique
-• Toujours corréler avec le panier moyen : Si panier élevé + closing faible → prix / valeur mal alignés
+• Toujours corréler avec le panier moyen :
+• Panier élevé + closing faible → problème de valeur perçue / pricing / discours
 
-Format de réponse OBLIGATOIRE :
+FORMAT DE RÉPONSE OBLIGATOIRE :
 
-1. Diagnostic (3–4 lignes max)
-Où se situe la fuite principale et son impact estimé.
+1. Score Global : XX / 100
+(Ne jamais donner 100 sauf perfection totale)
 
-2. Indicateur critique prioritaire
-Nom précis + raison.
+2. Diagnostic (3–4 lignes max)
+Où se situe la fuite principale + impact potentiel.
 
-3. Action exécutable demain matin (UNE seule)
-Étapes concrètes, outil ou méthode, temps estimé.
+3. Top 3 Plans d'Action Prioritaires
+Pour chaque action :
+• Description précise
+• Pourquoi
+• Étape exécutable < 24h
 
-4. Gain potentiel estimé
-Exemple : “+X RDV / mois” ou “+Y% closing”.
+4. Corrélation Prix / CAC / Closing
+Indiquer si le modèle économique est sain ou fragile.
 
-Contraintes :
-• Pas de généralités (“optimiser”, “améliorer”).
-• Une seule priorité.
-• Ne jamais spéculer sur des données absentes.
-• Toujours corréler qualification, CAC, closing et panier.
+CONTRAINTES :
+• Toujours proposer un Top 3, même si tout est bon
+• Jamais de conseils vagues ("optimiser", "travailler")
+• Pas de spéculation sur des données absentes
+• Prioriser l'impact financier
 
-Objectif final :
-Donner une action à effet levier immédiat, exécutable en < 24h.
+Objectif :
+Fournir un diagnostic reproductible et une feuille de route immédiate, orientée levier business.
 `;
 
             const result = await model.generateContent(prompt);
