@@ -565,9 +565,24 @@ export default function Dashboard({ formData }) {
                         Session de 30 min avec Corentin pour optimiser votre système de vente • Valeur 250€
                     </p>
 
-                    <div className="flex flex-col items-center gap-4">
-                        {/* iClosed inline widget */}
-                        <IClosedWidget />
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-8 max-w-5xl mx-auto">
+                        {/* Corentin's Profile Photo */}
+                        <div className="relative flex-shrink-0 animate-in" style={{ animationDelay: '1100ms' }}>
+                            <div className="relative z-10">
+                                <img
+                                    src="/corentin-profile.png"
+                                    alt="Corentin - Expert en croissance B2B"
+                                    className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
+                                />
+                                {/* Subtle glow effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-transparent rounded-3xl blur-xl -z-10"></div>
+                            </div>
+                        </div>
+
+                        {/* iClosed widget */}
+                        <div className="relative z-20 transform md:-ml-8 animate-in" style={{ animationDelay: '1200ms' }}>
+                            <IClosedWidget />
+                        </div>
                     </div>
                 </div>
 
