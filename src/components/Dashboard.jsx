@@ -118,7 +118,7 @@ export default function Dashboard({ formData }) {
     ];
 
     const projectionData = [
-        { month: 'Mois 1', Actuel: Math.round(revenue.current), Optimisé: Math.round(revenue.optimized * 0.65) },
+        { month: 'Mois 1', Actuel: Math.round(revenue.current), Optimisé: Math.round(revenue.current) },
         { month: 'Mois 2', Actuel: Math.round(revenue.current * 1.02), Optimisé: Math.round(revenue.optimized * 0.75) },
         { month: 'Mois 3', Actuel: Math.round(revenue.current * 1.01), Optimisé: Math.round(revenue.optimized * 0.85) },
         { month: 'Mois 4', Actuel: Math.round(revenue.current * 1.03), Optimisé: Math.round(revenue.optimized * 0.92) },
@@ -464,7 +464,7 @@ export default function Dashboard({ formData }) {
                 <div className="space-y-8 animate-in" style={{ animationDelay: '600ms' }}>
                     <div className="flex items-end justify-between border-b border-slate-200 pb-6">
                         <h2 className="text-3xl font-bold text-slate-900">Plan d'Action Prioritaire</h2>
-                        <div className="hidden md:block text-slate-500 font-medium">Top 3 Recommandations</div>
+                        <div className="hidden md:block text-slate-500 font-medium">Top Recommandations</div>
                     </div>
 
                     {topRecommendations.map((rec, index) => (

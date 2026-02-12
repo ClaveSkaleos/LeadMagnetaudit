@@ -90,6 +90,40 @@ export const generateRecommendations = (data) => {
         });
     }
 
+    // Priority 2b: Follow-up system (MANDATORY if "Non")
+    if (data.follow_up_system === false) {
+        // Follow-up tracking impact: +12% response rate improvement = more qualified leads
+        const responseRate = parseFloat(data.response_rate) || 0;
+        const outboundVol = parseFloat(data.outbound_volume) || 0;
+
+        // Better tracking = 12% more responses = more leads
+        const improvedResponseRate = responseRate * 1.12;
+        const additionalLeadsPerWeek = (outboundVol * (improvedResponseRate / 100)) - (outboundVol * (responseRate / 100));
+        const additionalLeadsPerMonth = additionalLeadsPerWeek * 4;
+        const additionalRDVs = additionalLeadsPerMonth * (showUpRate / 100);
+        const additionalDeals = additionalRDVs * (closingRate / 100);
+        const monthlyGain = additionalDeals * avgDeal;
+        const annualGain = monthlyGain * 12;
+
+        recommendations.push({
+            priority: 1,
+            category: 'prospection',
+            title: 'Installez un système de suivi des accroches',
+            description: 'Sans tracker ce qui marche, vous rejouez la même loterie à chaque message',
+            impact: 'high',
+            estimatedGain: Math.round(annualGain),
+            timeframe: '1 semaine',
+            difficulty: 'low',
+            quickWin: true,
+            actions: [
+                'Créer un tableau de suivi des messages testés',
+                'Logger systématiquement le taux de réponse par accroche',
+                'Identifier les 3 accroches gagnantes',
+                'Dupliquer les meilleurs patterns sur toute l\'équipe'
+            ]
+        });
+    }
+
     // Priority 3: Closing rate
     if (closingRate < 30) {
         // Closing improvement: +5-10 points realistic gain
