@@ -108,6 +108,7 @@ Contraintes :
 • Pas de spéculation sur des données absentes
 • Prioriser l'impact financier
 • NE JAMAIS UTILISER DE GRAS (pas d'étoiles doubles **), le texte brut uniquement.
+• ÉVITER LE JARGON TECHNIQUE (ex: ne pas dire "CAC" mais "coût d'acquisition", ne pas dire "Closing" mais "Taux de signature").
 
 Objectif :
 Fournir un diagnostic reproductible et une feuille de route immédiate, orientée levier business.

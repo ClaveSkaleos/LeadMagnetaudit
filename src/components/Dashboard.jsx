@@ -9,33 +9,12 @@ import Logo from './Logo';
 import IClosedWidget from './IClosedWidget';
 import { generateSalesAnalysis } from '../services/gemini';
 
-const AIAnalysisResult = ({ formData }) => {
-    const [analysis, setAnalysis] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        const fetchAnalysis = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const result = await generateSalesAnalysis(formData, formData);
-                setAnalysis(result);
-            } catch (err) {
-                console.error("Analysis failed:", err);
-                setError("L'IA n'a pas pu générer l'analyse. Le système est peut-être surchargé ou le modèle indisponible.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchAnalysis();
-    }, [formData]);
-
+const AIAnalysisDisplay = ({ analysis, loading, error }) => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center py-8 space-y-3">
                 <Sparkles className="w-8 h-8 text-indigo-400 animate-pulse" />
-                <p className="text-sm text-slate-400">L'IA analyse vos réponses...</p>
+                <p className="text-sm text-slate-400">L'IA finalise l'analyse de vos réponses...</p>
             </div>
         );
     }
@@ -63,9 +42,39 @@ export default function Dashboard({ formData }) {
     const [focusedField, setFocusedField] = useState(null);
     const [showConfetti, setShowConfetti] = useState(false);
 
+    // AI Analysis State - Lifted to Dashboard for parallel execution
+    const [aiAnalysis, setAiAnalysis] = useState('');
+    const [aiLoading, setAiLoading] = useState(true);
+    const [aiError, setAiError] = useState(null);
+
     const maturityScore = calculateMaturityScore(formData);
     const revenue = calculateOptimizedRevenue(formData);
     const topRecommendations = getTopRecommendations(formData);
+
+    // Trigger AI Analysis IMMEDIATELY on mount (parallel with user flow)
+    useEffect(() => {
+        const runAnalysis = async () => {
+            console.log("🚀 Starting AI Analysis in background...");
+            setAiLoading(true);
+            setAiError(null);
+            try {
+                // Pass formData twice because the function signature expects (formData, auditAnswers)
+                // but we only have formData which contains everything
+                const result = await generateSalesAnalysis(formData, formData);
+                console.log("✅ AI Analysis completed!");
+                setAiAnalysis(result);
+            } catch (err) {
+                console.error("❌ AI Analysis failed:", err);
+                setAiError("L'IA n'a pas pu générer l'analyse. Le système est peut-être surchargé ou le modèle indisponible.");
+            } finally {
+                setAiLoading(false);
+            }
+        };
+
+        if (formData && Object.keys(formData).length > 0) {
+            runAnalysis();
+        }
+    }, [formData]);
 
     useEffect(() => {
         if (step === 'scanning') {
@@ -97,6 +106,7 @@ export default function Dashboard({ formData }) {
                 currentRevenue: Math.round(revenue.current),
                 potentialRevenue: Math.round(revenue.optimized),
                 score: maturityScore.total,
+                aiAnalysis: aiAnalysis, // Include AI result if ready
                 submittedAt: new Date().toISOString()
             };
 
