@@ -1,0 +1,261 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+@theme {
+  /* Rolex Luxury Palette - Agency Style */
+
+  /* Primary - distinct Rolex Green */
+  --color-rolex-900: #064E3B;
+  --color-rolex-800: #065F46;
+
+  /* The "Effect" Color - Pastel Green Glow */
+  --color-glow-green: #D1FAE5;
+  /* Emerald 100 */
+  --color-glow-green-strong: #A7F3D0;
+  /* Emerald 200 */
+
+  /* Text */
+  --color-slate-900: #0F172A;
+  --color-slate-600: #475569;
+
+  /* Semantic */
+  --color-success: #064E3B;
+
+  /* Typography - Modern Geometric */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Inter Tight', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-slate-900 font-sans antialiased selection:bg-rolex-900 selection:text-white;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll from large glows */
+  }
+
+  /* REMOVE SPINNERS FROM NUMBER INPUTS */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer utilities {
+  /* --- THE "EFFECT" BACKGROUNDS --- */
+
+  /* The large pastel blur seen on 'short.' */
+  .bg-glow-effect {
+    position: relative;
+    background-color: #FFFFFF;
+  }
+
+  .bg-glow-effect::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 800px;
+    background: radial-gradient(circle at center, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 0) 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Secondary glow/spot */
+  .glow-spot {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(209, 250, 229, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+    filter: blur(60px);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* --- LUXURY BUTTONS --- */
+
+  /* The "Rolex" Pill Button */
+  .btn-rolex {
+    @apply relative inline-flex items-center justify-center font-bold rounded-full transition-all duration-300;
+    background-color: #064E3B;
+    color: white;
+    padding: 16px 40px;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    box-shadow: 0 10px 30px -10px rgba(6, 78, 59, 0.5);
+    /* Soft, colored shadow */
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .btn-rolex:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px -10px rgba(6, 78, 59, 0.6);
+  }
+
+  .btn-rolex:active {
+    transform: translateY(0);
+  }
+
+  /* Shine effect on hover */
+  .btn-rolex::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+    pointer-events: none;
+  }
+
+  .btn-rolex:hover::after {
+    left: 100%;
+  }
+
+  /* Secondary Modern Button */
+  .btn-secondary-modern {
+    @apply inline-flex items-center justify-center font-semibold rounded-full transition-all duration-300 bg-white text-slate-900 border border-slate-200;
+    padding: 16px 32px;
+    cursor: pointer;
+  }
+
+  .btn-secondary-modern:hover {
+    border-color: #064E3B;
+    color: #064E3B;
+    background-color: #F0FDF4;
+  }
+
+  /* --- CARDS & CONTAINERS --- */
+
+  /* Clean glass-like cards */
+  .card-modern {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+  }
+
+  .card-modern:hover {
+    border-color: rgba(6, 78, 59, 0.2);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+    /* Lift effect */
+    transform: translateY(-4px);
+  }
+
+  /* --- TYPOGRAPHY --- */
+  .heading-hero {
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #0F172A;
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #064E3B 0%, #10B981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* --- INPUTS --- */
+  .input-modern {
+    @apply w-full bg-white border border-slate-200 text-slate-900 rounded-2xl px-6 outline-none transition-all duration-300;
+    height: 64px;
+    /* Taller, more clickable */
+    font-size: 18px;
+    appearance: none;
+    /* Remove default styling */
+  }
+
+  .input-modern:focus {
+    border-color: #064E3B;
+    box-shadow: 0 0 0 4px rgba(6, 78, 59, 0.1);
+    /* Green ring */
+  }
+
+  /* Loading Bar */
+  .loading-pill {
+    @apply relative h-2 bg-slate-100 rounded-full overflow-hidden;
+  }
+
+  .loading-pill-fill {
+    @apply absolute top-0 left-0 h-full bg-rolex-900 rounded-full transition-all duration-500;
+    box-shadow: 0 0 10px rgba(6, 78, 59, 0.3);
+  }
+}
+
+/* Animations */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-in {
+  animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Confetti Rain Animation */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #064E3B;
+  /* Fallback color */
+  opacity: 0;
+}
+
+@keyframes confettiRain {
+  0% {
+    opacity: 1;
+    margin-top: -50px;
+    transform: rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    margin-top: 100vh;
+    transform: rotate(720deg);
+  }
+}
