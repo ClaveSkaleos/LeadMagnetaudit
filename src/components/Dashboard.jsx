@@ -556,35 +556,38 @@ export default function Dashboard({ formData }) {
                     </div>
                 </div>
 
-                <div className="text-center py-20 animate-in" style={{ animationDelay: '1000ms' }}>
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 max-w-2xl mx-auto font-display">
-                        Ne laissez pas ces revenus sur la table.
-                    </h2>
-
-                    <p className="text-sm text-slate-500 font-medium mb-8">
-                        Session de 30 min avec Corentin pour optimiser votre système de vente • Valeur 250€
-                    </p>
-
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-8 max-w-5xl mx-auto">
+                <div className="py-20 animate-in" style={{ animationDelay: '1000ms' }}>
+                    {/* Title + Photo */}
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-4">
                         {/* Corentin's Profile Photo */}
                         <div className="relative flex-shrink-0 animate-in" style={{ animationDelay: '1100ms' }}>
-                            <div className="relative z-10">
-                                <img
-                                    src="/corentin-profile.png"
+                            <div className="relative">
+                                <img 
+                                    src="/corentin-profile.png" 
                                     alt="Corentin - Expert en croissance B2B"
-                                    className="w-64 h-64 md:w-80 md:h-80 object-cover rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
+                                    className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
                                 />
                                 {/* Subtle glow effect */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-transparent rounded-3xl blur-xl -z-10"></div>
+                                <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-transparent rounded-2xl blur-xl -z-10"></div>
                             </div>
                         </div>
 
-                        {/* iClosed widget */}
-                        <div className="relative z-20 transform md:-ml-8 animate-in" style={{ animationDelay: '1200ms' }}>
-                            <IClosedWidget />
-                        </div>
+                        {/* Title */}
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 font-display text-center md:text-left">
+                            Ne laissez pas ces revenus sur la table.
+                        </h2>
+                    </div>
+
+                    <p className="text-sm text-slate-500 font-medium mb-8 text-center">
+                        Session de 30 min avec Corentin pour optimiser votre système de vente • Valeur 250€
+                    </p>
+
+                    {/* iClosed widget centered */}
+                    <div className="flex justify-center animate-in" style={{ animationDelay: '1200ms' }}>
+                        <IClosedWidget />
                     </div>
                 </div>
+
 
                 {/* Footer */}
                 <div className="border-t border-slate-200 pt-10 pb-6 text-center">
