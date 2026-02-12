@@ -32,8 +32,8 @@ export const generateSalesAnalysis = async (formData, auditAnswers) => {
         try {
             const genAI = new GoogleGenerativeAI(API_KEY);
             // Use gemini-1.5-flash for better logical reasoning and speed
-            // User requested experimental model gemini-3-pro-preview
-            const model = genAI.getGenerativeModel({ model: "gemini-3-pro-preview" });
+            // User requested experimental model gemini-3-flash-preview
+            const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
             const prompt = `
 Rôle :
@@ -139,20 +139,10 @@ Fournir un diagnostic reproductible et une feuille de route immédiate, orienté
             return response.text();
         } catch (e) {
             console.error("Client-side Gemini generation failed", e);
+            throw e; // Re-throw error so UI can handle it properly instead of falling back to mock
         }
     }
 
-    // MOCK FALLBACK (If everything else fails)
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    return `Analyse Stratégique Skaleos
-
-D'après les éléments partagés, votre structure présente un fort potentiel de croissance (${formData.leads_volume} leads/mois), mais semble freinée par un manque d'optimisation sur le closing (${formData.closing_rate}%).
-
-Votre situation :
-Vous avez une base solide d'acquisition, mais la conversion finale ne suit pas. Cela indique souvent que vos commerciaux passent trop de temps sur des prospects mal qualifiés ou manquent d'arguments percutants en fin de cycle.
-
-Action recommandée :
-Auditez vos 10 derniers deals perdus. Identifiez le motif réel (pas celui donné poliment par le prospect). Si c'est "trop cher", c'est un problème de valeur perçue. Si c'est "pas le bon moment", c'est un problème d'urgence. Ajustez votre script de découverte en conséquence dès demain.`;
+    // No mock fallback - if both fail, we throw error so UI stays in loading/error state
+    throw new Error("Failed to generate analysis from both server and client");
 };

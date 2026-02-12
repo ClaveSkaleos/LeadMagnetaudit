@@ -12,15 +12,21 @@ import { generateSalesAnalysis } from '../services/gemini';
 const AIAnalysisResult = ({ formData }) => {
     const [analysis, setAnalysis] = useState('');
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchAnalysis = async () => {
             setLoading(true);
-            // Construct a simplified audit answers object if needed, or pass empty if not available in formData directly
-            // In Dashboard, we have formData which contains answers.
-            const result = await generateSalesAnalysis(formData, formData);
-            setAnalysis(result);
-            setLoading(false);
+            setError(null);
+            try {
+                const result = await generateSalesAnalysis(formData, formData);
+                setAnalysis(result);
+            } catch (err) {
+                console.error("Analysis failed:", err);
+                setError("L'IA n'a pas pu générer l'analyse. Le système est peut-être surchargé ou le modèle indisponible.");
+            } finally {
+                setLoading(false);
+            }
         };
         fetchAnalysis();
     }, [formData]);
@@ -30,6 +36,15 @@ const AIAnalysisResult = ({ formData }) => {
             <div className="flex flex-col items-center justify-center py-8 space-y-3">
                 <Sparkles className="w-8 h-8 text-indigo-400 animate-pulse" />
                 <p className="text-sm text-slate-400">L'IA analyse vos réponses...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm text-center">
+                <AlertCircle className="w-6 h-6 mx-auto mb-2" />
+                {error}
             </div>
         );
     }
@@ -562,8 +577,8 @@ export default function Dashboard({ formData }) {
                         {/* Corentin's Profile Photo */}
                         <div className="relative flex-shrink-0 animate-in" style={{ animationDelay: '1100ms' }}>
                             <div className="relative">
-                                <img 
-                                    src="/corentin-profile.png" 
+                                <img
+                                    src="/corentin-profile.png"
                                     alt="Corentin - Expert en croissance B2B"
                                     className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500"
                                 />

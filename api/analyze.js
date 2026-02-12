@@ -32,8 +32,8 @@ export default async function handler(req, res) {
 
         const genAI = new GoogleGenerativeAI(API_KEY);
         // Use gemini-1.5-flash for better logical reasoning and speed
-        // User requested experimental model gemini-3-pro-preview
-        const model = genAI.getGenerativeModel({ model: "gemini-3-pro-preview" });
+        // User requested experimental model gemini-3-flash-preview
+        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
         const prompt = `
 Rôle :
