@@ -35,46 +35,18 @@ const AIAnalysisDisplay = ({ analysis, loading, error }) => {
     );
 };
 
-export default function Dashboard({ formData }) {
+export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) {
     // If accessing via history, skip scanning/contact steps (Logic removed, always scanning first)
     const [step, setStep] = useState('scanning');
     const [form, setForm] = useState({ firstName: '', lastName: '', email: '' });
     const [focusedField, setFocusedField] = useState(null);
     const [showConfetti, setShowConfetti] = useState(false);
 
-    // AI Analysis State - Lifted to Dashboard for parallel execution
-    const [aiAnalysis, setAiAnalysis] = useState('');
-    const [aiLoading, setAiLoading] = useState(true);
-    const [aiError, setAiError] = useState(null);
+    // AI Analysis State is now passed via props from App.jsx for earlier execution
 
     const maturityScore = calculateMaturityScore(formData);
     const revenue = calculateOptimizedRevenue(formData);
     const topRecommendations = getTopRecommendations(formData);
-
-    // Trigger AI Analysis IMMEDIATELY on mount (parallel with user flow)
-    useEffect(() => {
-        const runAnalysis = async () => {
-            console.log("🚀 Starting AI Analysis in background...");
-            setAiLoading(true);
-            setAiError(null);
-            try {
-                // Pass formData twice because the function signature expects (formData, auditAnswers)
-                // but we only have formData which contains everything
-                const result = await generateSalesAnalysis(formData, formData);
-                console.log("✅ AI Analysis completed!");
-                setAiAnalysis(result);
-            } catch (err) {
-                console.error("❌ AI Analysis failed:", err);
-                setAiError("L'IA n'a pas pu générer l'analyse. Le système est peut-être surchargé ou le modèle indisponible.");
-            } finally {
-                setAiLoading(false);
-            }
-        };
-
-        if (formData && Object.keys(formData).length > 0) {
-            runAnalysis();
-        }
-    }, [formData]);
 
     useEffect(() => {
         if (step === 'scanning') {
@@ -106,7 +78,7 @@ export default function Dashboard({ formData }) {
                 currentRevenue: Math.round(revenue.current),
                 potentialRevenue: Math.round(revenue.optimized),
                 score: maturityScore.total,
-                aiAnalysis: aiAnalysis, // Include AI result if ready
+                aiAnalysis: aiAnalysis, // Include AI result if ready (passed from props)
                 submittedAt: new Date().toISOString()
             };
 
@@ -543,7 +515,7 @@ export default function Dashboard({ formData }) {
                             <Sparkles className="w-6 h-6 text-indigo-600" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">Analyse de l'IA</h2>
+                            <h2 className="text-2xl font-bold text-slate-900">Analyse de l'agent Skaleos</h2>
                             <p className="text-sm text-slate-500">Basé sur vos 10 points de contrôle</p>
                         </div>
                     </div>
@@ -571,7 +543,7 @@ export default function Dashboard({ formData }) {
                         <div className="md:col-span-7 bg-slate-900 relative min-h-[400px]">
                             <iframe
                                 className="absolute inset-0 w-full h-full"
-                                src="https://www.youtube.com/embed/UR09nuSxGio"
+                                src="https://www.youtube.com/embed/XV8D1_IesDA?si=xCuLCzhb4ULrKWyO"
                                 title="Skaleos Methodology"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
