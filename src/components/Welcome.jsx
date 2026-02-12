@@ -33,15 +33,15 @@ export default function Welcome({ onStart }) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                         <div className="flex items-center gap-3">
                             <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                            <span className="font-medium text-slate-700">Audit complet en 2 min</span>
+                            <span className="font-medium text-slate-700">Audit commercial en 2 minutes</span>
                         </div>
                         <div className="flex items-center gap-3">
                             <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                            <span className="font-medium text-slate-700">Plan d'action sur-mesure</span>
+                            <span className="font-medium text-slate-700">Plan d’action structuré</span>
                         </div>
                         <div className="flex items-center gap-3">
                             <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                            <span className="font-medium text-slate-700">Rapport PDF détaillé</span>
+                            <span className="font-medium text-slate-700">Score final décisionnel</span>
                         </div>
                     </div>
 
@@ -51,15 +51,15 @@ export default function Welcome({ onStart }) {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                             <div className="flex items-center gap-2">
                                 <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                                <span className="text-sm text-slate-700">Méthodologie issue du terrain</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                                <span className="text-sm text-slate-700">Indicateurs fiables</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
                                 <span className="text-sm text-slate-700">Déployé sur +2M€ de CA</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                                <span className="text-sm text-slate-700">2 ans d'expérience structuration</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                                <span className="text-sm text-slate-700">Indicateurs fiabilisés</span>
                             </div>
                         </div>
                     </div>
