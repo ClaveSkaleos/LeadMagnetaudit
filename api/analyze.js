@@ -103,13 +103,14 @@ Nom précis + raison.
 Exemple : “+X RDV / mois” ou “+Y% closing”.
 
 Contraintes :
-• Pas de généralités (“optimiser”, “améliorer”).
-• Une seule priorité.
-• Ne jamais spéculer sur des données absentes.
-• Toujours corréler qualification, CAC, closing et panier.
+• Toujours proposer un Top 3, même si tout est bon
+• Jamais de conseils vagues ("optimiser", "travailler")
+• Pas de spéculation sur des données absentes
+• Prioriser l'impact financier
+• NE JAMAIS UTILISER DE GRAS (pas d'étoiles doubles **), le texte brut uniquement.
 
-Objectif final :
-Donner une action à effet levier immédiat, exécutable en < 24h.
+Objectif :
+Fournir un diagnostic reproductible et une feuille de route immédiate, orientée levier business.
 `;
 
         const result = await model.generateContent(prompt);

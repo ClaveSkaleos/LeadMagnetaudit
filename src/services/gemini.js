@@ -129,6 +129,7 @@ CONTRAINTES :
 • Jamais de conseils vagues ("optimiser", "travailler")
 • Pas de spéculation sur des données absentes
 • Prioriser l'impact financier
+• NE JAMAIS UTILISER DE GRAS (pas d'étoiles doubles **), le texte brut uniquement.
 
 Objectif :
 Fournir un diagnostic reproductible et une feuille de route immédiate, orientée levier business.
