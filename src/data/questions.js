@@ -83,7 +83,7 @@ export const QUESTIONS = [
         id: 'follow_up_system',
         section: 'prospection',
         type: 'boolean',
-        label: 'Avez-vous un système pour tracker quelles accroches marchent le mieux ?',
+        label: 'Avez-vous un système pour suivre quelles accroches marchent le mieux ?',
         helper: 'Tests A/B, reporting des messages',
         required: true
     },

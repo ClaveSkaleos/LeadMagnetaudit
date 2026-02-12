@@ -18,7 +18,7 @@ const AIAnalysisResult = ({ formData }) => {
             setLoading(true);
             // Construct a simplified audit answers object if needed, or pass empty if not available in formData directly
             // In Dashboard, we have formData which contains answers.
-            const result = await generateSalesAnalysis(formData, {});
+            const result = await generateSalesAnalysis(formData, formData);
             setAnalysis(result);
             setLoading(false);
         };
@@ -75,14 +75,14 @@ export default function Dashboard({ formData }) {
         if (form.email && form.email.includes('@') && form.firstName && form.lastName) {
 
             const payload = {
+                ...formData, // Include all audit answers
                 firstName: form.firstName,
                 lastName: form.lastName,
                 email: form.email,
                 currentRevenue: Math.round(revenue.current),
                 potentialRevenue: Math.round(revenue.optimized),
-                leads: formData.leads_volume || 0,
-                closingRate: formData.closing_rate || 0,
-                salesReps: formData.sales_reps || 0
+                score: maturityScore.total,
+                submittedAt: new Date().toISOString()
             };
 
             console.log("🚀 Sending to Make.com Webhook:", payload);
@@ -194,15 +194,27 @@ export default function Dashboard({ formData }) {
                     <div className="grid grid-cols-2 gap-4 bg-white/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-100 shadow-sm">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
-                                <Activity className="w-4 h-4" />
+                                <Zap className="w-4 h-4" />
                             </div>
-                            <span className="text-sm font-bold text-slate-700">Score de maturité</span>
+                            <span className="text-sm font-bold text-slate-700">Audit en 2 min</span>
                         </div>
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
                                 <Map className="w-4 h-4" />
                             </div>
-                            <span className="text-sm font-bold text-slate-700">Plan d'action</span>
+                            <span className="text-sm font-bold text-slate-700">Plan structuré</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
+                                <Activity className="w-4 h-4" />
+                            </div>
+                            <span className="text-sm font-bold text-slate-700">Score décisionnel</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
+                                <Target className="w-4 h-4" />
+                            </div>
+                            <span className="text-sm font-bold text-slate-700">Méthode terrain</span>
                         </div>
                     </div>
 
@@ -527,10 +539,8 @@ export default function Dashboard({ formData }) {
                             <p className="text-lg text-slate-600 leading-relaxed mb-8">
                                 La croissance n'est pas un art, c'est une science. Découvrez comment nous aidons les entreprises à visualiser et optimiser leurs ventes.
                             </p>
-                            <div className="flex items-center gap-4">
-                                <div className="text-sm font-medium text-slate-500">
-                                    Rejoignez l'élite du SaaS B2B.
-                                </div>
+                            <div className="text-sm font-medium text-slate-500">
+                                Rejoignez l'élite des commerciaux B2B.
                             </div>
                         </div>
                         <div className="md:col-span-7 bg-slate-900 relative min-h-[400px]">
@@ -546,18 +556,18 @@ export default function Dashboard({ formData }) {
                     </div>
                 </div>
 
-                {/* Final CTA - Strategic Audit */}
                 <div className="text-center py-20 animate-in" style={{ animationDelay: '1000ms' }}>
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8 max-w-2xl mx-auto font-display">
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 max-w-2xl mx-auto font-display">
                         Ne laissez pas ces revenus sur la table.
                     </h2>
+
+                    <p className="text-sm text-slate-500 font-medium mb-8">
+                        Session de 30 min avec Corentin pour optimiser votre système de vente • Valeur 250€
+                    </p>
 
                     <div className="flex flex-col items-center gap-4">
                         {/* iClosed inline widget */}
                         <IClosedWidget />
-                        <p className="text-sm text-slate-500 font-medium mt-4">
-                            Session de 30 min avec Corentin pour optimiser votre système de vente • Valeur 250€
-                        </p>
                     </div>
                 </div>
 
