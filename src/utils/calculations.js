@@ -85,34 +85,34 @@ export const calculateOptimizedRevenue = (formData) => {
     const maturityScore = maturity.total;
 
     // INVERSE CORRELATION: High maturity = Low multiplier (very conservative)
-    // Score 90-100 = 1.05-1.10x (minimal optimization room)
-    // Score 80-90 = 1.15-1.20x (modest potential)
-    // Score 60-80 = 1.25-1.35x (good improvement potential)
-    // Score 40-60 = 1.40-1.50x (solid potential)
-    // Score 0-40 = 1.60-1.80x (significant potential)
+    // Score 90-100 = 1.02-1.05x (marginal gain)
+    // Score 80-90 = 1.05-1.12x (minor optimization)
+    // Score 60-80 = 1.12-1.25x (solid improvement)
+    // Score 40-60 = 1.25-1.35x (significant improvement)
+    // Score 0-40 = 1.35-1.50x (transformational but realistic)
 
     let multiplier = 1.0;
 
     if (maturityScore >= 90) {
-        // Top tier: 5-10% potential only
-        multiplier = 1.05 + ((100 - maturityScore) / 100) * 0.05;
+        // Top tier: 2-5% potential only
+        multiplier = 1.02 + ((100 - maturityScore) / 100) * 0.03;
     } else if (maturityScore >= 80) {
-        // Very Strong: 15-20% boost potential
-        multiplier = 1.15 + ((90 - maturityScore) / 10) * 0.05;
+        // Very Strong: 5-12% boost potential
+        multiplier = 1.05 + ((90 - maturityScore) / 10) * 0.07;
     } else if (maturityScore >= 60) {
-        // Strong but gaps: 25-35% revenue potential
-        multiplier = 1.25 + ((80 - maturityScore) / 20) * 0.10;
+        // Strong but gaps: 12-25% revenue potential
+        multiplier = 1.12 + ((80 - maturityScore) / 20) * 0.13;
     } else if (maturityScore >= 40) {
-        // Average: 40-50% potential
-        multiplier = 1.40 + ((60 - maturityScore) / 20) * 0.10;
+        // Average: 25-35% potential
+        multiplier = 1.25 + ((60 - maturityScore) / 20) * 0.10;
     } else {
-        // Low maturity: 60-80% potential
-        multiplier = 1.60 + ((40 - maturityScore) / 40) * 0.20;
+        // Low maturity: 35-50% potential (capped at 1.5x)
+        multiplier = 1.35 + ((40 - maturityScore) / 40) * 0.15;
     }
 
     // Cap at realistic maximum
-    multiplier = Math.min(multiplier, 1.80);
-    multiplier = Math.max(multiplier, 1.05); // Minimum 5% improvement ALWAYS
+    multiplier = Math.min(multiplier, 1.50);
+    multiplier = Math.max(multiplier, 1.02); // Minimum 2% improvement ALWAYS
 
     const optimizedMonthly = currentMonthly * multiplier;
 

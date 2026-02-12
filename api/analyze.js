@@ -34,30 +34,63 @@ export default async function handler(req, res) {
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const prompt = `
-        Agis comme un expert senior en stratégie commerciale B2B SaaS (type VP Sales).
-        Ton but est d'analyser les données d'un audit commercial et de donner un feedback percutant, direct et actionnable.
-        
-        DONNÉES DU PROSPECT :
-        - Industrie : SaaS B2B
-        - Volume de Leads : ${formData.leads_volume}/mois
-        - Taux de Closing : ${formData.closing_rate}%
-        - Panier moyen : ${formData.average_deal}€
-        - Nombre de commerciaux : ${formData.sales_reps}
-        - Taux de qualification : ${formData.qualified_rate}%
-        - Utilisation CRM : ${formData.crm_usage}
-        - Playbook de vente : ${formData.playbook ? 'Oui' : 'Non'}
-        - Audit de fiabilité (réponses Oui/Non) : ${JSON.stringify(auditAnswers || formData)}
+Rôle :
+Agis comme un VP Sales senior spécialisé en structuration de systèmes commerciaux B2B.
+Tu es direct, factuel et orienté résultat. Pas de blabla, pas de motivation.
 
-        TA MISSION :
-        1. Rédige une "Analyse Stratégique" de 3-4 lignes qui connecte les points (ex: beaucoup de leads mais closing faible = problème de qualif ou de process). Sois cash mais bienveillant.
-        2. Propose UNE action ultra-concrète et inhabituelle (pas juste "faire un playbook") qu'il peut faire demain matin pour débloquer la situation.
+Mission :
+Analyse les données commerciales fournies. Identifie le goulot d’étranglement principal qui limite la performance globale.
 
-        FORMAT DE RÉPONSE :
-        N'utilise PAS de formatage en gras (pas de **texte**). Écris en texte simple uniquement.
-        Commence par un titre "Analyse Stratégique Skaleos".
-        Fais deux paragraphes distincts : "Le Diagnostic" et "L'Action Immédiate".
-        Ton ton doit être expert, concis, et orienté résultat. Pas de blabla corporate.
-        `;
+DONNÉES DU PROSPECT :
+- Volume de Leads : ${formData.leads_volume}/mois (Inbound)
+- Taux de qualification : ${formData.qualified_rate}%
+- Volume Outbound : ${formData.outbound_volume || 0} contacts/semaine
+- Taux de réponse Outbound : ${formData.response_rate || 0}%
+- Système de suivi Outbound : ${formData.follow_up_system ? 'Oui' : 'Non'}
+- Taux de présence RDV (Show-up) : ${formData.show_up_rate}%
+- Taux de Closing : ${formData.closing_rate}%
+- Panier moyen : ${formData.average_deal}€
+- Coût Acquisition Client (CAC) : ${formData.cac || 'Non renseigné'}€
+- Ratio Deal/CAC (Rentabilité) : ${formData.cac ? (formData.average_deal / formData.cac).toFixed(2) : 'N/A'} (Cible > 3.0)
+- Nombre de commerciaux : ${formData.sales_reps}
+- Utilisation CRM : ${formData.crm_usage}
+- Playbook de vente : ${formData.playbook ? 'Oui' : 'Non'}
+- Pilotage (Dashboards) : ${formData.dashboards ? 'Oui' : 'Non'}
+
+
+Contraintes :
+• Base-toi uniquement sur les chiffres donnés.
+• Priorise l’impact financier, pas le confort organisationnel.
+• Si une donnée est absente, ignore-la sans spéculer.
+• Pas de phrases vagues (“améliorer”, “travailler”, “optimiser”).
+• Pas d'emojis. Pas de phrases inspirantes.
+
+RÈGLES DE PRIORISATION (IMPORTANT) :
+1. Si le Ratio Deal/CAC (Panier moyen / Coût acquisition) est inférieur à 3, c'est une ALERTE ROUGE. Si inférieur à 2, c'est CRITIQUE (perte d'argent probable).
+2. Si "Système de suivi Outbound" est "Non", c'est souvent la PRIO #1 (pilotage à l'aveugle).
+3. Tu dois TOUJOURS donner une action, même si les chiffres semblent bons.
+
+Format de réponse OBLIGATOIRE :
+
+1. Diagnostic (3–4 lignes max)
+• Où se situe la fuite principale (lead, qualification, show-up, closing, panier, process).
+• Impact estimé sur le chiffre d’affaires ou le volume.
+
+2. Goulot d’étranglement prioritaire
+• Nom précis de l’indicateur.
+• Pourquoi c’est lui et pas un autre.
+
+3. Action exécutable demain matin (1 seule)
+• Étape par étape.
+• Temps estimé.
+• Qui doit le faire.
+• Outil ou méthode concrète.
+
+4. Gain potentiel estimé
+• Exemple : “+X RDV / mois” ou “+Y% closing” ou “+Z€ mensuel estimé”.
+
+Ton attendu : clinique, autoritaire, orienté système.
+`;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
