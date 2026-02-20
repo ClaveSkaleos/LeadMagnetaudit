@@ -267,7 +267,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                             <div className="bg-slate-50 border border-slate-100 rounded-lg p-4 flex items-start gap-3 mt-4">
                                 <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
                                 <div className="text-xs text-slate-500 leading-relaxed">
-                                    <strong className="text-slate-700">100% Confidentiel.</strong> Aucune newsletter, aucun spam. Votre email sert uniquement à sauvegarder vos résultats.
+                                    <strong className="text-slate-700">100% Confidentiel.</strong> Votre email sert uniquement à vous envoyer un récapitulatif des résultats.
                                 </div>
                             </div>
                         </form>
@@ -525,6 +525,41 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                     </div>
                 </div>
 
+                {/* Locked Expert Analysis Section */}
+                <div className="card-modern relative bg-white border border-slate-200 overflow-hidden animate-in" style={{ animationDelay: '850ms' }}>
+
+                    {/* The blurred content underneath */}
+                    <div className="p-8 md:p-10 filter blur-md opacity-40 select-none pointer-events-none">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center">
+                                <Star className="w-6 h-6 text-amber-600" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-slate-900">Analyse approfondie par Corentin</h2>
+                                <p className="text-sm text-slate-500">Expert en Systèmes de Vente B2B</p>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="h-4 bg-slate-300 rounded w-full"></div>
+                            <div className="h-4 bg-slate-300 rounded w-5/6"></div>
+                            <div className="h-4 bg-slate-300 rounded w-4/6"></div>
+                            <div className="h-12 bg-slate-300 rounded w-full mt-6"></div>
+                        </div>
+                    </div>
+
+                    {/* The lock overlay */}
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-white/20 backdrop-blur-[2px]">
+                        <div className="w-16 h-16 bg-white rounded-full shadow-2xl flex items-center justify-center mb-6 border border-slate-100">
+                            <Lock className="w-8 h-8 text-rolex-900" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-900 mb-3 font-display">Résultats Expert Bloqués</h3>
+                        <p className="text-lg text-slate-700 max-w-lg mb-6 shadow-sm p-4 bg-white/90 rounded-xl border border-slate-100">
+                            Pour obtenir l'analyse complète d'un expert et aller plus loin dans l'optimisation de votre structure, réservez votre audit personnalisé ci-dessous.
+                        </p>
+                        <Lock className="w-6 h-6 text-slate-300 animate-pulse" />
+                    </div>
+                </div>
+
                 {/* Video Embedding */}
                 <div className="card-modern overflow-hidden animate-in bg-white" style={{ animationDelay: '900ms' }}>
                     <div className="grid md:grid-cols-12 gap-0">
@@ -576,7 +611,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                     </div>
 
                     <p className="text-sm text-slate-500 font-medium mb-8 text-center">
-                        Session de 30 min avec Corentin pour optimiser votre système de vente • Valeur 250€
+                        Session de 30 min avec Corentin pour un audit de votre système de vente
                     </p>
 
                     {/* iClosed widget centered */}
