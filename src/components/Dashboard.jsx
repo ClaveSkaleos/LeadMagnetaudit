@@ -369,24 +369,59 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
 
                     {/* Radar */}
                     <div className="card-modern p-8 animate-in bg-white hover:shadow-lg transition-shadow" style={{ animationDelay: '400ms' }}>
-                        <div className="mb-8">
-                            <h3 className="text-xl font-bold text-slate-900 font-display">Équilibre de votre Structure</h3>
-                            <p className="text-sm text-slate-500">Comparaison par rapport aux standards du marché.</p>
+                        <div className="mb-6">
+                            <h3 className="text-xl font-display text-slate-900">Équilibre de votre Structure</h3>
+                            <p className="text-sm text-slate-500">Scores par pilier commercial.</p>
                         </div>
-                        <ResponsiveContainer width="100%" height={350}>
+
+                        {/* Pillar Score Cards - color coded */}
+                        <div className="grid grid-cols-2 gap-3 mb-6">
+                            {[
+                                { key: 'acquisition', label: 'Acquisition', max: 30, score: maturityScore.pillars.acquisition },
+                                { key: 'prospection', label: 'Prospection', max: 30, score: maturityScore.pillars.prospection },
+                                { key: 'conversion', label: 'Conversion', max: 40, score: maturityScore.pillars.conversion },
+                                { key: 'structure', label: 'Structure', max: 30, score: maturityScore.pillars.structure },
+                            ].map(({ key, label, max, score }) => {
+                                const pct = score / max;
+                                const color = pct >= 0.7
+                                    ? { bar: '#07674b', bg: 'rgba(7,103,75,0.08)', text: '#07674b', badge: 'Bon', badgeBg: 'rgba(7,103,75,0.1)' }
+                                    : pct >= 0.4
+                                        ? { bar: '#F59E0B', bg: 'rgba(245,158,11,0.08)', text: '#D97706', badge: 'Moyen', badgeBg: 'rgba(245,158,11,0.1)' }
+                                        : { bar: '#EF4444', bg: 'rgba(239,68,68,0.08)', text: '#DC2626', badge: 'Faible', badgeBg: 'rgba(239,68,68,0.1)' };
+                                return (
+                                    <div key={key} className="rounded-2xl p-4 border" style={{ backgroundColor: color.bg, borderColor: color.bar + '33' }}>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</span>
+                                            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: color.badgeBg, color: color.text }}>{color.badge}</span>
+                                        </div>
+                                        <div className="flex items-end gap-1 mb-2">
+                                            <span className="text-3xl font-extrabold" style={{ color: color.text }}>{score}</span>
+                                            <span className="text-sm text-slate-400 mb-1">/{max}</span>
+                                        </div>
+                                        <div className="h-2 bg-white/60 rounded-full overflow-hidden">
+                                            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.round(pct * 100)}%`, backgroundColor: color.bar }} />
+                                        </div>
+                                        <div className="text-right text-xs font-medium mt-1" style={{ color: color.text }}>{Math.round(pct * 100)}%</div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Radar chart */}
+                        <ResponsiveContainer width="100%" height={280}>
                             <RadarChart data={radarData}>
                                 <PolarGrid stroke="#E2E8F0" />
                                 <PolarAngleAxis
                                     dataKey="pillar"
-                                    tick={{ fill: '#475569', fontSize: 13, fontWeight: 600 }}
+                                    tick={{ fill: '#475569', fontSize: 12, fontWeight: 600 }}
                                 />
                                 <PolarRadiusAxis angle={90} domain={[0, 40]} tick={false} axisLine={false} />
                                 <Radar
                                     name="Votre Score"
                                     dataKey="score"
-                                    stroke="#064E3B"
+                                    stroke={maturityScore.total >= 70 ? '#07674b' : maturityScore.total >= 40 ? '#F59E0B' : '#EF4444'}
                                     strokeWidth={3}
-                                    fill="#064E3B"
+                                    fill={maturityScore.total >= 70 ? '#07674b' : maturityScore.total >= 40 ? '#F59E0B' : '#EF4444'}
                                     fillOpacity={0.15}
                                 />
                             </RadarChart>
