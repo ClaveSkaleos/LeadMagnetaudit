@@ -1,9 +1,47 @@
-import React, { useState } from 'react';
-import { ArrowRight, CheckCircle2, ShieldCheck, Mail, ArrowLeft, Star, TrendingUp, BarChart3, Activity } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, CheckCircle2, ShieldCheck, Star, TrendingUp, TrendingDown, Zap, Target, Activity, BarChart3, Lock } from 'lucide-react';
 import Logo from './Logo';
 
-export default function Welcome({ onStart }) {
+// --- Fictive Preview Data ---
+const PREVIEW_SCORE = 61;
+const PREVIEW_SCORE_COLOR = '#F59E0B'; // amber for a "needs improvement" score
+const PREVIEW_RECO = [
+    {
+        number: 1,
+        tag: '⚡ IMPACT RAPIDE',
+        tagColor: 'bg-amber-50 text-amber-600 border-amber-100',
+        title: 'Optimiser le taux de show-up',
+        desc: 'Votre taux de présence aux rendez-vous est de 52%, soit 23 points en-dessous de la norme marché. Chaque no-show représente du CAC brûlé.',
+        actions: [
+            'Envoyer un SMS de confirmation 24h avant le RDV',
+            'Proposer un lien de reprogrammation automatique',
+            'Qualifier davantage en amont pour des prospects engagés',
+            'Ajouter une page de confirmation avec valeur perçue',
+        ],
+        gain: '18 400',
+    },
+    {
+        number: 2,
+        tag: null,
+        title: 'Réduire le CPL (Coût par Lead)',
+        desc: 'À 87€/lead, votre acquisition coûte 2x la référence sectorielle. Votre CAC global de 1 240€ compresse sévèrement les marges.',
+        actions: [
+            'Auditer et couper les campagnes au ROI négatif',
+            'Tester des audiences lookalike sur Meta',
+            'Développer un canal organique (contenu + SEO)',
+        ],
+        gain: '11 200',
+    },
+];
 
+const PREVIEW_PILLARS = [
+    { label: 'Acquisition', value: 14, max: 30, color: 'bg-amber-400' },
+    { label: 'Prospection', value: 18, max: 30, color: 'bg-emerald-500' },
+    { label: 'Conversion', value: 21, max: 40, color: 'bg-amber-400' },
+    { label: 'Structure', value: 8, max: 30, color: 'bg-red-400' },
+];
+
+export default function Welcome({ onStart }) {
     return (
         <div className="relative min-h-screen w-full flex flex-col justify-center items-center bg-glow-effect overflow-hidden py-12 px-6">
 
@@ -15,144 +53,237 @@ export default function Welcome({ onStart }) {
             <div className="glow-spot top-[-20%] left-[50%] -translate-x-1/2 w-[800px] h-[800px] opacity-40 blur-[120px]"></div>
             <div className="glow-spot bottom-[-20%] right-[-10%] w-[600px] h-[600px] opacity-30 blur-[100px]"></div>
 
-            <div className="relative z-10 w-full max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-center animate-in">
+            {/* === HERO SECTION (original layout) === */}
+            <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center animate-in space-y-12">
 
                 {/* Main Value Prop */}
-                <div className="space-y-10 flex flex-col items-center lg:items-start text-center lg:text-left">
-                    <div className="space-y-6">
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] font-display">
-                            Diagnostiquez votre <br />
-                            <span className="text-gradient">performance commerciale.</span>
-                        </h1>
-                        <p className="text-xl text-slate-600 max-w-xl leading-relaxed">
-                            Identifiez en 2 minutes le levier exact qui bloque votre passage au niveau supérieur.
+                <div className="space-y-6">
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] font-display">
+                        Diagnostiquez votre <br />
+                        <span className="text-gradient">performance commerciale.</span>
+                    </h1>
+                    <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                        Identifiez en 2 minutes le levier exact qui bloque votre passage au niveau supérieur.
+                    </p>
+                </div>
+
+                {/* Benefits Grid */}
+                <div className="flex flex-col gap-4 justify-center items-center text-left bg-white/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-100 shadow-sm max-w-2xl w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                        <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                            <span className="font-medium text-slate-700">Audit commercial en 2 minutes</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                            <span className="font-medium text-slate-700">Plan d'action structuré</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                            <span className="font-medium text-slate-700">Score final décisionnel</span>
+                        </div>
+                    </div>
+                    <div className="w-full border-t border-slate-200 pt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                            <div className="flex items-center gap-2">
+                                <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                                <span className="text-sm text-slate-700">Méthodologie issue du terrain</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                                <span className="text-sm text-slate-700">Indicateurs fiables</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                                <span className="text-sm text-slate-700">Déployé sur +2M€ de CA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* CTA */}
+                <div className="flex flex-col items-center gap-6 w-full max-w-md">
+                    <button
+                        onClick={onStart}
+                        className="btn-rolex w-full text-lg py-5 shadow-2xl shadow-emerald-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all group relative overflow-hidden"
+                    >
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                            Lancer mon analyse GRATUITE
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
+                    </button>
+
+                    <div className="flex items-center gap-6 text-sm text-slate-500">
+                        <div className="flex items-center gap-2">
+                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                            <span>100% Confidentiel</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                            <span>Gratuit</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* === DETAILED PREVIEW SECTION === */}
+            <div className="relative z-10 w-full max-w-5xl mx-auto mt-24 space-y-6">
+
+                {/* Section Header */}
+                <div className="text-center space-y-3 mb-10">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider border border-slate-200">
+                        <BarChart3 className="w-4 h-4" /> Exemple de rapport — Données fictives
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 font-display">
+                        Voici ce que vous allez obtenir
+                    </h2>
+                    <p className="text-slate-500 text-lg max-w-xl mx-auto">Un rapport personnalisé avec votre score, vos leviers de croissance et vos actions prioritaires.</p>
+                </div>
+
+                {/* Preview Cards Row 1 — Score + Pillars */}
+                <div className="grid md:grid-cols-2 gap-6">
+
+                    {/* Score Card */}
+                    <div className="card-modern bg-white p-8 flex flex-col items-center gap-6 border-l-4 border-amber-400 shadow-lg">
+                        <div className="w-full flex items-center justify-between mb-2">
+                            <div>
+                                <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Maturité Commerciale</div>
+                                <div className="text-5xl font-extrabold text-slate-900">{PREVIEW_SCORE}<span className="text-2xl text-slate-400 font-bold">/100</span></div>
+                            </div>
+                            <div className="w-24 h-24 relative flex items-center justify-center">
+                                <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                                    <circle cx="50" cy="50" r="42" fill="none" stroke="#F1F5F9" strokeWidth="10" />
+                                    <circle
+                                        cx="50" cy="50" r="42" fill="none"
+                                        stroke={PREVIEW_SCORE_COLOR} strokeWidth="10" strokeLinecap="round"
+                                        strokeDasharray={`${2 * Math.PI * 42 * PREVIEW_SCORE / 100} ${2 * Math.PI * 42}`}
+                                    />
+                                </svg>
+                                <span className="absolute text-xl font-extrabold text-slate-900">{PREVIEW_SCORE}</span>
+                            </div>
+                        </div>
+                        <div className="w-full grid grid-cols-2 gap-3">
+                            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                                <div className="text-xs text-slate-400 font-semibold uppercase mb-1">Revenu Actuel</div>
+                                <div className="text-xl font-bold text-slate-700 flex items-center gap-1"><TrendingDown className="w-4 h-4 text-slate-400" /> 42 000 €</div>
+                            </div>
+                            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                                <div className="text-xs text-emerald-600 font-semibold uppercase mb-1">Potentiel Optimisé</div>
+                                <div className="text-xl font-bold text-emerald-700 flex items-center gap-1"><TrendingUp className="w-4 h-4 text-emerald-500" /> 71 600 €</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Pillars Card */}
+                    <div className="card-modern bg-white p-8 shadow-lg">
+                        <h3 className="font-bold text-slate-900 text-lg mb-6 font-display">Équilibre de votre Structure</h3>
+                        <div className="space-y-4">
+                            {PREVIEW_PILLARS.map((p) => (
+                                <div key={p.label}>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="text-sm font-semibold text-slate-700">{p.label}</span>
+                                        <span className="text-sm font-bold text-slate-500">{p.value}<span className="text-slate-300">/{p.max}</span></span>
+                                    </div>
+                                    <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                                        <div
+                                            className={`h-full rounded-full ${p.color} transition-all`}
+                                            style={{ width: `${(p.value / p.max) * 100}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Preview Cards Row 2 — Priority Actions */}
+                <div className="space-y-4">
+                    <h3 className="text-2xl font-bold text-slate-900 font-display border-b border-slate-200 pb-4">Plan d'Action Prioritaire</h3>
+                    {PREVIEW_RECO.map((rec) => (
+                        <div key={rec.number} className="card-modern bg-white p-7 md:p-9 shadow-md hover:shadow-xl transition-shadow">
+                            <div className="flex flex-col md:flex-row items-start gap-6">
+                                <div className="w-11 h-11 rounded-2xl bg-rolex-900 text-white font-bold flex items-center justify-center text-lg shadow-lg flex-shrink-0">
+                                    {rec.number}
+                                </div>
+                                <div className="flex-1 w-full">
+                                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                                        <h4 className="text-xl font-bold text-slate-900 font-display">{rec.title}</h4>
+                                        {rec.tag && (
+                                            <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-bold border ${rec.tagColor}`}>
+                                                {rec.tag}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="text-slate-600 mb-5 leading-relaxed">{rec.desc}</p>
+                                    <div className="grid md:grid-cols-2 gap-3 bg-slate-50 rounded-xl p-5 border border-slate-100 mb-4">
+                                        {rec.actions.map((action, i) => (
+                                            <div key={i} className="flex items-start gap-2">
+                                                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                                                <span className="text-slate-700 text-sm font-medium">{action}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Gain Potentiel</span>
+                                        <span className="text-lg font-bold text-emerald-700">+{rec.gain} € / an</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Locked Expert Section Preview */}
+                <div className="card-modern relative bg-white overflow-hidden shadow-md border border-slate-200">
+                    {/* Blurred content underneath */}
+                    <div className="p-8 filter blur-sm opacity-30 select-none pointer-events-none space-y-4">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center">
+                                <Star className="w-5 h-5 text-amber-500" />
+                            </div>
+                            <div>
+                                <div className="font-bold text-slate-900">Analyse approfondie par Corentin</div>
+                                <div className="text-xs text-slate-500">Expert en Systèmes de Vente B2B</div>
+                            </div>
+                        </div>
+                        <div className="h-4 bg-slate-300 rounded w-full"></div>
+                        <div className="h-4 bg-slate-300 rounded w-5/6"></div>
+                        <div className="h-4 bg-slate-300 rounded w-4/6"></div>
+                        <div className="h-4 bg-slate-300 rounded w-full"></div>
+                        <div className="h-4 bg-slate-300 rounded w-3/4"></div>
+                    </div>
+                    {/* Lock overlay */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                        <div className="w-14 h-14 bg-white rounded-full shadow-xl flex items-center justify-center mb-4 border border-slate-100">
+                            <Lock className="w-7 h-7 text-rolex-900" />
+                        </div>
+                        <h4 className="text-xl font-bold text-slate-900 mb-2 font-display">Analyse Expert Réservée</h4>
+                        <p className="text-slate-600 text-sm max-w-md">
+                            Après votre audit, débloquez l'analyse personnalisée d'un expert en réservant un appel gratuit.
                         </p>
                     </div>
-
-                    {/* Benefits List - 3 checks + credibility */}
-                    <div className="flex flex-col gap-4 text-left bg-white/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-100 shadow-sm w-full max-w-md">
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                                <span className="font-medium text-slate-700">Audit commercial en 2 minutes</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                                <span className="font-medium text-slate-700">Plan d’action structuré</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-                                <span className="font-medium text-slate-700">Score final décisionnel</span>
-                            </div>
-                        </div>
-
-                        {/* Credibility Section */}
-                        <div className="w-full border-t border-slate-200 pt-4 mt-2">
-                            <div className="grid grid-cols-1 gap-2">
-                                <div className="flex items-center gap-2">
-                                    <Star className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                                    <span className="text-sm text-slate-700">Déployé sur +2M€ de CA</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* CTA Area */}
-                    <div className="flex flex-col items-center lg:items-start gap-4 w-full max-w-md">
-                        <button
-                            onClick={onStart}
-                            className="btn-rolex w-full text-lg py-5 shadow-2xl shadow-emerald-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all group relative overflow-hidden"
-                        >
-                            <span className="relative z-10 flex items-center justify-center gap-2">
-                                Lancer mon analyse GRATUITE
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </span>
-                            {/* Shimmer effect */}
-                            <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
-                        </button>
-
-                        <div className="flex items-center gap-6 text-sm text-slate-500 justify-center w-full">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                                <span>100% Confidentiel</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                                <span>Gratuit</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                {/* Result Preview (New mockup section) */}
-                <div className="relative w-full max-w-md mx-auto hidden lg:block transform hover:rotate-2 transition-transform duration-500">
-                    <div className="absolute -inset-1 bg-gradient-to-br from-emerald-400/30 to-rolex-900/30 rounded-[2rem] blur-xl opacity-50"></div>
-                    <div className="card-modern relative bg-white/90 backdrop-blur-xl p-8 shadow-2xl border border-white/40 overflow-hidden">
-                        
-                        <div className="absolute top-0 right-0 p-4 opacity-5">
-                            <BarChart3 className="w-32 h-32" />
-                        </div>
-
-                        <div className="space-y-6 relative z-10">
-                            {/* Mock Header */}
-                            <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider mb-3">
-                                    Aperçu de vos résultats
-                                </div>
-                                <h3 className="text-2xl font-bold text-slate-900 font-display">Plan d'Action Personnalisé</h3>
-                            </div>
-
-                            {/* Mock Score Indicator */}
-                            <div className="flex items-center gap-4">
-                                <div className="relative w-20 h-20 rounded-full border-4 border-slate-100 flex items-center justify-center bg-white shadow-inner">
-                                    <div className="absolute inset-0 w-full h-full border-4 border-transparent border-t-emerald-500 rounded-full rotate-45 opacity-50"></div>
-                                    <div className="absolute inset-0 w-full h-full border-4 border-transparent border-r-emerald-500 rounded-full rotate-45 opacity-70"></div>
-                                    <span className="text-2xl font-bold text-slate-800">82<span className="text-sm text-slate-400">/100</span></span>
-                                </div>
-                                <div className="space-y-1">
-                                    <div className="text-sm font-bold text-slate-700">Maturité Commerciale</div>
-                                    <div className="text-xs text-emerald-600 font-medium flex items-center gap-1">
-                                        <TrendingUp className="w-3 h-3" /> Supérieur à la moyenne
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Mock Action Plan list */}
-                            <div className="space-y-3 pt-4 border-t border-slate-100">
-                                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex gap-3 opacity-90">
-                                    <div className="w-8 h-8 rounded-full bg-rolex-900 text-white flex items-center justify-center text-sm font-bold shrink-0">1</div>
-                                    <div className="space-y-2 w-full">
-                                        <div className="h-4 bg-slate-200 rounded-full w-3/4"></div>
-                                        <div className="h-3 bg-slate-200 rounded-full w-full"></div>
-                                        <div className="h-3 bg-slate-200 rounded-full w-5/6"></div>
-                                    </div>
-                                </div>
-                                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex gap-3 opacity-70">
-                                    <div className="w-8 h-8 rounded-full bg-slate-300 text-white flex items-center justify-center text-sm font-bold shrink-0">2</div>
-                                    <div className="space-y-2 w-full">
-                                        <div className="h-4 bg-slate-200 rounded-full w-2/3"></div>
-                                        <div className="h-3 bg-slate-200 rounded-full w-5/6"></div>
-                                    </div>
-                                </div>
-                                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex gap-3 opacity-40">
-                                    <div className="w-8 h-8 rounded-full bg-slate-200 text-white flex items-center justify-center text-sm font-bold shrink-0">3</div>
-                                    <div className="space-y-2 w-full">
-                                        <div className="h-4 bg-slate-200 rounded-full w-1/2"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            {/* Blur CTA overlay */}
-                            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent flex items-end justify-center pb-4 z-20">
-                                <div className="text-sm font-bold text-slate-500 italic flex items-center gap-2">
-                                    <Activity className="w-4 h-4" /> Découvrez votre plan
-                                </div>
-                            </div>
-                        </div>
-
+                {/* Final CTA */}
+                <div className="flex flex-col items-center gap-4 pt-6 pb-12">
+                    <button
+                        onClick={onStart}
+                        className="btn-rolex text-lg py-5 px-12 shadow-2xl shadow-emerald-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all group relative overflow-hidden"
+                    >
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                            Obtenir mon rapport personnalisé
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
+                    </button>
+                    <div className="flex items-center gap-6 text-sm text-slate-400">
+                        <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-emerald-500" /> 100% Confidentiel</div>
+                        <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Gratuit</div>
+                        <div className="flex items-center gap-2"><Activity className="w-4 h-4 text-emerald-500" /> 2 minutes</div>
                     </div>
                 </div>
-
             </div>
 
         </div>
