@@ -43,7 +43,7 @@ const PREVIEW_PILLARS = [
 
 export default function Welcome({ onStart }) {
     return (
-        <div className="relative min-h-screen w-full flex flex-col justify-center items-center bg-glow-effect overflow-hidden py-12 px-6">
+        <div className="relative min-h-screen w-full flex flex-col justify-center items-center bg-glow-effect overflow-hidden pt-28 pb-12 md:py-12 px-6">
 
             <div className="absolute top-6 left-6 z-50">
                 <Logo />
@@ -54,7 +54,7 @@ export default function Welcome({ onStart }) {
             <div className="glow-spot bottom-[-20%] right-[-10%] w-[600px] h-[600px] opacity-30 blur-[100px]"></div>
 
             {/* === HERO SECTION (original layout) === */}
-            <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center animate-in space-y-12">
+            <div className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center animate-in space-y-12 mt-4 md:mt-0">
 
                 {/* Main Value Prop */}
                 <div className="space-y-6">
