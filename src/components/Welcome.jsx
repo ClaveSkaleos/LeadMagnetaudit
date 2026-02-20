@@ -58,7 +58,7 @@ export default function Welcome({ onStart }) {
 
                 {/* Main Value Prop */}
                 <div className="space-y-6">
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] font-display">
+                    <h1 className="text-4xl md:text-6xl font-display text-black tracking-tight leading-[1.12]">
                         Diagnostiquez votre <br />
                         <span className="text-gradient">performance commerciale.</span>
                     </h1>
@@ -133,10 +133,10 @@ export default function Welcome({ onStart }) {
 
                 {/* Section Header */}
                 <div className="text-center space-y-3 mb-10">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider border border-slate-200">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider border" style={{ background: 'rgba(7,103,75,0.07)', color: '#07674b', borderColor: 'rgba(7,103,75,0.2)' }}>
                         <BarChart3 className="w-4 h-4" /> Exemple de rapport — Données fictives
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 font-display">
+                    <h2 className="text-3xl md:text-4xl font-display text-black">
                         Voici ce que vous allez obtenir
                     </h2>
                     <p className="text-slate-500 text-lg max-w-xl mx-auto">Un rapport personnalisé avec votre score, vos leviers de croissance et vos actions prioritaires.</p>
@@ -200,16 +200,16 @@ export default function Welcome({ onStart }) {
 
                 {/* Preview Cards Row 2 — Priority Actions */}
                 <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-slate-900 font-display border-b border-slate-200 pb-4">Plan d'Action Prioritaire</h3>
+                    <h3 className="text-2xl font-display text-slate-900 font-display border-b border-slate-200 pb-4">Plan d'Action Prioritaire</h3>
                     {PREVIEW_RECO.map((rec) => (
                         <div key={rec.number} className="card-modern bg-white p-7 md:p-9 shadow-md hover:shadow-xl transition-shadow">
                             <div className="flex flex-col md:flex-row items-start gap-6">
-                                <div className="w-11 h-11 rounded-2xl bg-rolex-900 text-white font-bold flex items-center justify-center text-lg shadow-lg flex-shrink-0">
+                                <div className="w-8 h-8 rounded-full text-white flex items-center justify-center text-sm font-bold shrink-0" style={{ backgroundColor: '#07674b' }}>
                                     {rec.number}
                                 </div>
                                 <div className="flex-1 w-full">
                                     <div className="flex flex-wrap items-center gap-3 mb-2">
-                                        <h4 className="text-xl font-bold text-slate-900 font-display">{rec.title}</h4>
+                                        <h4 className="text-xl font-display text-slate-900">{rec.title}</h4>
                                         {rec.tag && (
                                             <span className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-bold border ${rec.tagColor}`}>
                                                 {rec.tag}
@@ -227,7 +227,7 @@ export default function Welcome({ onStart }) {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Gain Potentiel</span>
-                                        <span className="text-lg font-bold text-emerald-700">+{rec.gain} € / an</span>
+                                        <span className="text-lg font-bold" style={{ color: '#07674b' }}>+{rec.gain} € / an</span>
                                     </div>
                                 </div>
                             </div>
@@ -256,10 +256,10 @@ export default function Welcome({ onStart }) {
                     </div>
                     {/* Lock overlay */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                        <div className="w-14 h-14 bg-white rounded-full shadow-xl flex items-center justify-center mb-4 border border-slate-100">
-                            <Lock className="w-7 h-7 text-rolex-900" />
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3" style={{ background: 'rgba(230,176,72,0.12)', color: '#E6B048', border: '1px solid rgba(230,176,72,0.3)' }}>
+                            Aperçu de vos résultats
                         </div>
-                        <h4 className="text-xl font-bold text-slate-900 mb-2 font-display">Analyse Expert Réservée</h4>
+                        <h3 className="text-2xl font-display text-slate-900">Plan d'Action Personnalisé</h3>
                         <p className="text-slate-600 text-sm max-w-md">
                             Après votre audit, débloquez l'analyse personnalisée d'un expert en réservant un appel gratuit.
                         </p>

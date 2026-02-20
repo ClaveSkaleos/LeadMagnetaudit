@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
-import { Lock, Unlock, TrendingUp, TrendingDown, AlertCircle, CheckCircle2, Target, Zap, ArrowRight, ShieldCheck, Mail, User, Sparkles, History, Activity, Map } from 'lucide-react';
+import { Lock, Unlock, TrendingUp, TrendingDown, AlertCircle, CheckCircle2, Target, Zap, ArrowRight, ShieldCheck, Mail, User, Sparkles, History, Activity, Map, Star } from 'lucide-react';
 import { calculateMaturityScore, calculateOptimizedRevenue, identifyWeaknesses } from '../utils/calculations';
 import { getTopRecommendations } from '../utils/recommendations';
 import AnimatedScore from './AnimatedScore';
@@ -279,7 +279,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
 
     // Results Dashboard - With Confetti!
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 relative overflow-hidden">
+        <div className="min-h-screen bg-parchment pb-20 relative overflow-hidden">
 
             {renderConfetti()}
 
@@ -306,10 +306,10 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                 {/* Header Section */}
                 <div className="grid lg:grid-cols-2 gap-12 items-center animate-in">
                     <div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-6 border border-emerald-100 shadow-sm">
+                        <div className="badge-skaleos mb-6">
                             Audit Terminé
                         </div>
-                        <h1 className="text-4xl lg:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight leading-[1.1] font-display">
+                        <h1 className="text-4xl lg:text-5xl font-display text-slate-900 mb-6 leading-[1.15]">
                             Potentiel de <br />
                             <span className="text-gradient">croissance identifié.</span>
                         </h1>
@@ -341,9 +341,9 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                         </div>
                     </div>
                     <div className="lg:col-span-1">
-                        <div className="card-modern bg-white p-8 border-l-4 border-l-emerald-500 shadow-xl shadow-emerald-900/5 h-full relative overflow-hidden transform hover:-translate-y-1 transition-all duration-300">
+                        <div className="card-modern bg-white p-8 border-l-4 h-full relative overflow-hidden transform hover:-translate-y-1 transition-all duration-300" style={{ borderLeftColor: '#13b37d', boxShadow: '0 20px 40px -10px rgba(7,103,75,0.08)' }}>
                             <div className="absolute top-0 right-0 p-2 opacity-10">
-                                <TrendingUp className="w-24 h-24 text-emerald-500" />
+                                <TrendingUp className="w-24 h-24" style={{ color: '#13b37d' }} />
                             </div>
                             <MetricCard
                                 icon={TrendingUp}
@@ -460,7 +460,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                 {/* Detailed Recommendations */}
                 <div className="space-y-8 animate-in" style={{ animationDelay: '600ms' }}>
                     <div className="flex items-end justify-between border-b border-slate-200 pb-6">
-                        <h2 className="text-3xl font-bold text-slate-900">Plan d'Action Prioritaire</h2>
+                        <h2 className="text-3xl font-display text-slate-900">Plan d'Action Prioritaire</h2>
                         <div className="hidden md:block text-slate-500 font-medium">Top Recommandations</div>
                     </div>
 
@@ -471,14 +471,14 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                         >
                             <div className="flex flex-col md:flex-row items-start gap-8">
                                 <div className="flex-shrink-0">
-                                    <div className="w-12 h-12 rounded-2xl bg-rolex-900 text-white font-bold flex items-center justify-center text-xl shadow-lg shadow-emerald-900/10 transform group-hover:scale-110 transition-transform duration-300">
+                                    <div className="w-12 h-12 rounded-2xl text-white font-bold flex items-center justify-center text-xl shadow-lg transform group-hover:scale-110 transition-transform duration-300" style={{ backgroundColor: '#07674b' }}>
                                         {index + 1}
                                     </div>
                                 </div>
 
                                 <div className="flex-1 w-full">
                                     <div className="flex flex-wrap items-center justify-between gap-4 mb-3">
-                                        <h3 className="text-2xl font-bold text-slate-900 group-hover:text-emerald-800 transition-colors font-display">{rec.title}</h3>
+                                        <h3 className="text-2xl font-display text-slate-900 transition-colors">{rec.title}</h3>
                                         {rec.quickWin && (
                                             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100">
                                                 <Zap className="w-3.5 h-3.5 fill-current" /> IMPACT RAPIDE
@@ -488,10 +488,10 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
 
                                     <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-4xl">{rec.description}</p>
 
-                                    <div className="grid md:grid-cols-2 gap-4 bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6 group-hover:bg-emerald-50/30 transition-colors">
+                                    <div className="grid md:grid-cols-2 gap-4 bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6 transition-colors">
                                         {rec.actions.map((action, i) => (
                                             <div key={i} className="flex items-start gap-3">
-                                                <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                                                <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#07674b' }} />
                                                 <span className="text-slate-700 font-medium">{action}</span>
                                             </div>
                                         ))}
@@ -499,7 +499,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
 
                                     <div className="flex items-center gap-6 pt-2">
                                         <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Gain Potentiel</div>
-                                        <div className="text-xl font-bold text-emerald-700">+{Math.round(rec.estimatedGain).toLocaleString('fr-FR')} € / an</div>
+                                        <div className="text-xl font-bold" style={{ color: '#07674b' }}>+{Math.round(rec.estimatedGain).toLocaleString('fr-FR')} € / an</div>
                                     </div>
                                 </div>
                             </div>
@@ -511,11 +511,11 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                 {/* AI Analysis Section */}
                 <div className="card-modern p-8 md:p-10 bg-white border border-indigo-100 shadow-xl shadow-indigo-900/5 animate-in" style={{ animationDelay: '800ms' }}>
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center">
-                            <Sparkles className="w-6 h-6 text-indigo-600" />
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'rgba(7,103,75,0.1)' }}>
+                            <Sparkles className="w-6 h-6" style={{ color: '#07674b' }} />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">Analyse de l'agent Skaleos</h2>
+                            <h2 className="text-2xl font-display text-slate-900">Analyse de l'agent Skaleos</h2>
                             <p className="text-sm text-slate-500">Basé sur vos 10 points de contrôle</p>
                         </div>
                     </div>
@@ -552,7 +552,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                         <div className="w-16 h-16 bg-white rounded-full shadow-2xl flex items-center justify-center mb-6 border border-slate-100">
                             <Lock className="w-8 h-8 text-rolex-900" />
                         </div>
-                        <h3 className="text-2xl font-bold text-slate-900 mb-3 font-display">Résultats Expert Bloqués</h3>
+                        <h3 className="text-2xl font-display text-slate-900 mb-3">Résultats Expert Bloqués</h3>
                         <p className="text-lg text-slate-700 max-w-lg mb-6 shadow-sm p-4 bg-white/90 rounded-xl border border-slate-100">
                             Pour obtenir l'analyse complète d'un expert et aller plus loin dans l'optimisation de votre structure, réservez votre audit personnalisé ci-dessous.
                         </p>
@@ -567,7 +567,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                             <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider mb-6 w-fit">
                                 Méthodologie
                             </div>
-                            <h3 className="text-3xl font-bold text-slate-900 mb-6 font-display">Comprendre la mécanique.</h3>
+                            <h3 className="text-3xl font-display text-slate-900 mb-6">Comprendre la mécanique.</h3>
                             <p className="text-lg text-slate-600 leading-relaxed mb-8">
                                 La croissance n'est pas un art, c'est une science. Découvrez comment nous aidons les entreprises à visualiser et optimiser leurs ventes.
                             </p>
@@ -605,7 +605,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                         </div>
 
                         {/* Title */}
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 font-display text-center md:text-left">
+                        <h2 className="text-3xl md:text-4xl font-display text-slate-900 text-center md:text-left">
                             Ne laissez pas ces revenus sur la table.
                         </h2>
                     </div>
