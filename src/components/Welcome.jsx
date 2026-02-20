@@ -235,36 +235,6 @@ export default function Welcome({ onStart }) {
                     ))}
                 </div>
 
-                {/* Locked Expert Section Preview */}
-                <div className="card-modern relative bg-white overflow-hidden shadow-md border border-slate-200">
-                    {/* Blurred content underneath */}
-                    <div className="p-8 filter blur-sm opacity-30 select-none pointer-events-none space-y-4">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center">
-                                <Star className="w-5 h-5 text-amber-500" />
-                            </div>
-                            <div>
-                                <div className="font-bold text-slate-900">Analyse approfondie par Corentin</div>
-                                <div className="text-xs text-slate-500">Expert en Systèmes de Vente B2B</div>
-                            </div>
-                        </div>
-                        <div className="h-4 bg-slate-300 rounded w-full"></div>
-                        <div className="h-4 bg-slate-300 rounded w-5/6"></div>
-                        <div className="h-4 bg-slate-300 rounded w-4/6"></div>
-                        <div className="h-4 bg-slate-300 rounded w-full"></div>
-                        <div className="h-4 bg-slate-300 rounded w-3/4"></div>
-                    </div>
-                    {/* Lock overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-white/10 backdrop-blur-[1px]">
-                        <div className="w-14 h-14 bg-white rounded-full shadow-xl flex items-center justify-center mb-4 border border-slate-100">
-                            <Lock className="w-7 h-7" style={{ color: '#07674b' }} />
-                        </div>
-                        <h4 className="text-xl font-display text-slate-900 mb-2">Analyse Expert Réservée</h4>
-                        <p className="text-slate-600 text-sm max-w-md">
-                            Après votre audit, débloquez l'analyse personnalisée d'un expert en réservant un appel gratuit.
-                        </p>
-                    </div>
-                </div>
 
                 {/* Final CTA */}
                 <div className="flex flex-col items-center gap-4 pt-6 pb-12">
