@@ -255,11 +255,11 @@ export default function Welcome({ onStart }) {
                         <div className="h-4 bg-slate-300 rounded w-3/4"></div>
                     </div>
                     {/* Lock overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider mb-3" style={{ background: 'rgba(230,176,72,0.12)', color: '#E6B048', border: '1px solid rgba(230,176,72,0.3)' }}>
-                            Aperçu de vos résultats
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-white/10 backdrop-blur-[1px]">
+                        <div className="w-14 h-14 bg-white rounded-full shadow-xl flex items-center justify-center mb-4 border border-slate-100">
+                            <Lock className="w-7 h-7" style={{ color: '#07674b' }} />
                         </div>
-                        <h3 className="text-2xl font-display text-slate-900">Plan d'Action Personnalisé</h3>
+                        <h4 className="text-xl font-display text-slate-900 mb-2">Analyse Expert Réservée</h4>
                         <p className="text-slate-600 text-sm max-w-md">
                             Après votre audit, débloquez l'analyse personnalisée d'un expert en réservant un appel gratuit.
                         </p>
