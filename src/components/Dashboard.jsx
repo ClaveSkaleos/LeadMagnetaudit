@@ -613,7 +613,7 @@ export default function Dashboard({ formData, aiAnalysis, aiLoading, aiError }) 
                         <div className="md:col-span-7 bg-slate-900 relative min-h-[400px]">
                             <iframe
                                 className="absolute inset-0 w-full h-full"
-                                src="https://www.youtube.com/embed/XV8D1_IesDA?si=xCuLCzhb4ULrKWyO"
+                                src="https://www.tella.tv/video/optimisez-votre-prospection-et-vente-avec-un-systeme-automatise-5dh3/embed?b=0&a=0&os=0&p=0"
                                 title="Skaleos Methodology"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
